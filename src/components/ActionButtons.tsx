@@ -5,15 +5,15 @@ import { SecurityModule } from '@/lib/types'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { 
-  Play, 
-  Square, 
-  RotateCcw, 
-  Save, 
-  Upload, 
-  Eye, 
-  EyeOff, 
-  Moon, 
+import {
+  Play,
+  Square,
+  RotateCcw,
+  Save,
+  Upload,
+  Eye,
+  EyeOff,
+  Moon,
   Sun,
   CheckCircle,
   XCircle,
@@ -33,10 +33,10 @@ interface ActionButtonsProps {
   isRunning: boolean
 }
 
-export function ActionButtons({ 
-  selectedModule, 
-  activeTab, 
-  isDarkMode, 
+export function ActionButtons({
+  selectedModule,
+  activeTab,
+  isDarkMode,
   onToggleDarkMode,
   onCompile,
   onDeploy,
@@ -100,14 +100,14 @@ export function ActionButtons({
             {getStatusText()}
           </span>
         </div>
-        
+
         {status === 'error' && activeTab === 'vulnerable' && (
           <Badge variant="destructive" className="gap-1">
             <AlertTriangle className="w-3 h-3" />
             Vulnerability detected!
           </Badge>
         )}
-        
+
         {status === 'success' && activeTab === 'fixed' && (
           <Badge variant="default" className="gap-1 bg-green-500">
             <CheckCircle className="w-3 h-3" />
@@ -182,16 +182,6 @@ export function ActionButtons({
         >
           {showSolution ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
           {showSolution ? 'Hide' : 'Show'} Solution
-        </Button>
-
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={onToggleDarkMode}
-          className="gap-1"
-        >
-          {isDarkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-          {isDarkMode ? 'Light' : 'Dark'}
         </Button>
       </div>
     </div>
