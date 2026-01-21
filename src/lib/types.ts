@@ -12,6 +12,10 @@ export interface SecurityModule {
   impact: string
   prevention: string
   references: string[]
+  isRealWorld?: boolean
+  loss?: string
+  date?: string
+  images?: string[]
 }
 
 export interface VMState {

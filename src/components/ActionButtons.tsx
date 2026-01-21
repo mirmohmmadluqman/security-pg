@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { SecurityModule } from '@/lib/types'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -14,9 +14,12 @@ import {
   CheckCircle,
   XCircle,
   AlertTriangle,
-  Zap
+  Zap,
+  Loader2
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+
+export type IDEStatus = 'idle' | 'compiling' | 'deploying' | 'executing' | 'success' | 'error'
 
 interface ActionButtonsProps {
   selectedModule: SecurityModule
@@ -29,6 +32,7 @@ interface ActionButtonsProps {
   onReset: () => void
   onSave: () => void
   isRunning: boolean
+  status: IDEStatus
 }
 
 export function ActionButtons({
@@ -39,27 +43,17 @@ export function ActionButtons({
   onExploit,
   onReset,
   onSave,
-  isRunning
+  isRunning,
+  status
 }: ActionButtonsProps) {
-  const [status, setStatus] = useState<'idle' | 'compiling' | 'deploying' | 'executing' | 'success' | 'error'>('idle')
   const [showSolution, setShowSolution] = useState(false)
-
-  useEffect(() => {
-    if (isRunning) {
-      setStatus('executing')
-    } else {
-      setStatus('idle')
-    }
-  }, [isRunning])
 
   const getStatusIcon = () => {
     switch (status) {
       case 'compiling':
-        return <div className="w-4 h-4 border-2 border-cyan-500 border-t-transparent rounded-full animate-spin" />
       case 'deploying':
-        return <div className="w-4 h-4 border-2 border-yellow-500 border-t-transparent rounded-full animate-spin" />
       case 'executing':
-        return <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+        return <Loader2 className="w-4 h-4 text-primary animate-spin" />
       case 'success':
         return <CheckCircle className="w-4 h-4 text-green-400" />
       case 'error':
@@ -73,9 +67,9 @@ export function ActionButtons({
     switch (status) {
       case 'compiling': return 'Compiling...'
       case 'deploying': return 'Deploying...'
-      case 'executing': return 'Executing exploit...'
-      case 'success': return activeTab === 'vulnerable' ? 'Exploit successful!' : 'Fix verified!'
-      case 'error': return 'Exploit failed!'
+      case 'executing': return activeTab === 'fixed' ? 'Verifying fix...' : 'Executing exploit...'
+      case 'success': return activeTab === 'fixed' ? 'Contract secured!' : 'Action complete'
+      case 'error': return 'Vulnerability found!'
       default: return 'Ready'
     }
   }
@@ -85,22 +79,22 @@ export function ActionButtons({
       <div className="flex items-center gap-3 bg-black/20 px-3 py-1.5 rounded-full border border-white/5">
         <div className="flex items-center gap-2">
           {getStatusIcon()}
-          <span className="text-sm font-mono text-muted-foreground">
+          <span className="text-sm font-mono text-muted-foreground min-w-[100px]">
             {getStatusText()}
           </span>
         </div>
 
         {status === 'error' && activeTab === 'vulnerable' && (
-          <Badge variant="destructive" className="gap-1 animate-pulse">
+          <Badge variant="destructive" className="gap-1 animate-pulse bg-red-500/20 text-red-500 border-red-500/50">
             <AlertTriangle className="w-3 h-3" />
-            VULN DETECTED
+            ATTACK SUCCESS
           </Badge>
         )}
 
         {status === 'success' && activeTab === 'fixed' && (
           <Badge className="gap-1 bg-green-500/20 text-green-400 hover:bg-green-500/30 border-green-500/50">
             <CheckCircle className="w-3 h-3" />
-            SECURED
+            FIX VERIFIED
           </Badge>
         )}
       </div>
@@ -133,14 +127,14 @@ export function ActionButtons({
           onClick={onExploit}
           disabled={isRunning}
           className={cn(
-            "gap-2 font-bold shadow-lg transition-all",
-            activeTab === 'vulnerable'
-              ? "bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-500 hover:to-orange-500 text-white shadow-red-500/20"
-              : "bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white shadow-green-500/20"
+            "gap-2 font-bold shadow-lg transition-all min-w-[120px]",
+            activeTab === 'fixed'
+              ? "bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white shadow-green-500/20"
+              : "bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-500 hover:to-orange-500 text-white shadow-red-500/20"
           )}
         >
           <Zap className="w-3.5 h-3.5 fill-current" />
-          {activeTab === 'vulnerable' ? 'Run Exploit' : 'Verify Fix'}
+          {activeTab === 'fixed' ? 'Verify Fix' : 'Run Exploit'}
         </Button>
 
         <div className="w-px h-6 bg-white/10 mx-1 hidden md:block" />

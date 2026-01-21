@@ -15,9 +15,13 @@ import { useTheme } from 'next-themes'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
+export type IDEStatus = 'idle' | 'compiling' | 'deploying' | 'executing' | 'success' | 'error'
+
 export default function ChallengeClient({ challengeId }: { challengeId: string }) {
     const [activeTab, setActiveTab] = useState<'vulnerable' | 'attack' | 'fixed'>('vulnerable')
-    const [isRunning, setIsRunning] = useState(false)
+    const [status, setStatus] = useState<IDEStatus>('idle')
+    const [isCompiled, setIsCompiled] = useState(false)
+    const [isDeployed, setIsDeployed] = useState(false)
     const [code, setCode] = useState('')
     const [logs, setLogs] = useState<string[]>([])
     const { theme } = useTheme()
@@ -42,9 +46,42 @@ export default function ChallengeClient({ challengeId }: { challengeId: string }
         notFound()
     }
 
+    const isCodeSecure = (code: string, moduleId: string): boolean => {
+        const normalizedCode = code.replace(/\s+/g, ' ').toLowerCase()
+
+        switch (moduleId) {
+            case 'reentrancy':
+                const balanceResetIndex = normalizedCode.indexOf('balances[msg.sender] = 0')
+                const callIndex = normalizedCode.indexOf('.call')
+                return balanceResetIndex !== -1 && callIndex !== -1 && balanceResetIndex < callIndex
+
+            case 'access-control':
+                const mintIndex = normalizedCode.indexOf('function mint')
+                if (mintIndex === -1) return true
+                const nextBy = normalizedCode.indexOf('onlyowner', mintIndex)
+                const nextBrace = normalizedCode.indexOf('{', mintIndex)
+                return nextBy !== -1 && nextBy < nextBrace
+
+            case 'tx-origin':
+                return normalizedCode.includes('msg.sender == owner') && !normalizedCode.includes('tx.origin == owner')
+
+            case 'integer-overflow':
+                return normalizedCode.includes('require') && (normalizedCode.includes('>=') || normalizedCode.includes('<=') || normalizedCode.includes('overflow detected'))
+
+            default:
+                // Fallback: if they are on the fixed tab and the code is roughly what we expect
+                if (activeTab === 'fixed') return true
+                return false
+        }
+    }
+
     const handleTabChange = (tab: string) => {
         const newTab = tab as 'vulnerable' | 'attack' | 'fixed'
         setActiveTab(newTab)
+        // Reset state when switching tabs to ensure independent execution
+        setIsCompiled(false)
+        setIsDeployed(false)
+        setStatus('idle')
 
         switch (newTab) {
             case 'vulnerable':
@@ -59,69 +96,92 @@ export default function ChallengeClient({ challengeId }: { challengeId: string }
         }
     }
 
+    // Reset compilation whenever code changes
+    useEffect(() => {
+        setIsCompiled(false)
+        setIsDeployed(false)
+        setStatus('idle')
+    }, [code])
+
     const handleCompile = () => {
+        setStatus('compiling')
         setLogs([...logs, '🔨 Compiling contract...'])
+
         setTimeout(() => {
+            setIsCompiled(true)
+            setStatus('success')
             setLogs(prev => [...prev, '✅ Compilation successful!'])
-        }, 1000)
+            setTimeout(() => setStatus('idle'), 2000)
+        }, 1500)
     }
 
     const handleDeploy = () => {
+        if (!isCompiled) {
+            setLogs([...logs, '❌ Error: Please compile the contract before deploying.'])
+            return
+        }
+
+        setStatus('deploying')
         setLogs([...logs, '🚀 Deploying contract to local EVM...'])
+
         setTimeout(() => {
-            setLogs(prev => [...prev, '✅ Contract deployed at: 0x1234...5678'])
-        }, 1000)
+            setIsDeployed(true)
+            setStatus('success')
+            const mockAddr = '0x' + Math.random().toString(16).slice(2, 10) + '...' + Math.random().toString(16).slice(2, 6)
+            setLogs(prev => [...prev, `✅ Contract deployed at: ${mockAddr}`])
+            setTimeout(() => setStatus('idle'), 2000)
+        }, 1500)
     }
 
     const handleExploit = () => {
-        setIsRunning(true)
-        setLogs([...logs, '⚡ Running exploit...'])
+        if (!isDeployed) {
+            setLogs([...logs, '❌ Error: Please deploy the contract before running exploits.'])
+            return
+        }
+
+        setStatus('executing')
+        const secure = isCodeSecure(code, selectedModule.id)
+        setLogs([...logs, secure ? '🛡️ Running security verification...' : '⚡ Running exploit...'])
 
         setTimeout(() => {
-            if (activeTab === 'vulnerable') {
+            if (!secure) {
+                setStatus('error')
                 setLogs(prev => [
                     ...prev,
                     '⚠️  Vulnerability detected!',
                     `💥 ${selectedModule.vulnerability}`,
                     '❌ Exploit successful - contract is vulnerable!'
                 ])
-            } else if (activeTab === 'fixed') {
+            } else {
+                setStatus('success')
                 setLogs(prev => [
                     ...prev,
-                    '🔒 Testing fixed contract...',
+                    '🛡️ Verifying remediation...',
                     '✅ Exploit blocked!',
                     '🎉 Fix verified - contract is safe!'
                 ])
-            } else {
-                setLogs(prev => [
-                    ...prev,
-                    '💣 Attack contract deployed',
-                    '⚔️  Attacking vulnerable contract...',
-                    '💰 Exploit executed successfully!'
-                ])
             }
-            setIsRunning(false)
         }, 2000)
     }
 
     const handleReset = () => {
         handleTabChange(activeTab)
-        setLogs(['🔄 Contract reset to original state'])
+        setLogs(['🔄 Environment reset to original state'])
     }
 
     const handleSave = () => {
-        setLogs([...logs, '💾 Progress saved!'])
+        setLogs([...logs, '💾 Local progress saved!'])
     }
 
     return (
-        <div className="min-h-screen bg-background flex flex-col relative overflow-hidden">
+        <div className="h-screen bg-background flex flex-col relative overflow-hidden">
             {/* Background noise/gradient for IDE */}
             <div className="absolute inset-0 pointer-events-none opacity-20">
                 <div className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] bg-primary/30 blur-[100px] rounded-full" />
             </div>
 
             {/* Header */}
-            <header className="h-16 glass border-b border-white/5 flex items-center justify-between px-6 sticky top-0 z-50">
+            <header className="h-16 glass border-b border-white/5 flex items-center justify-between px-6 sticky top-0 z-50 shrink-0">
                 <div className="flex items-center gap-4">
                     <Link href="/challenges">
                         <Button
@@ -153,18 +213,18 @@ export default function ChallengeClient({ challengeId }: { challengeId: string }
             {/* Main Content */}
             <div className="flex-1 grid grid-cols-12 overflow-hidden">
                 {/* Left Panel - Info */}
-                <div className="col-span-12 md:col-span-3 border-r border-white/5 bg-card/30 backdrop-blur-sm overflow-y-auto custom-scrollbar">
+                <div className="col-span-12 md:col-span-3 border-r border-white/5 bg-card/30 backdrop-blur-sm overflow-y-auto custom-scrollbar min-h-0">
                     <InfoPanel module={selectedModule} />
                 </div>
 
                 {/* Middle Panel - Code Editor */}
-                <div className="col-span-12 md:col-span-6 flex flex-col min-h-[500px] bg-background/50">
-                    <Tabs value={activeTab} onValueChange={handleTabChange} className="flex-1 flex flex-col">
-                        <div className="border-b border-white/5 bg-black/20 px-4">
+                <div className="col-span-12 md:col-span-6 flex flex-col bg-background/50 min-h-0">
+                    <Tabs value={activeTab} onValueChange={handleTabChange} className="flex-1 flex flex-col overflow-hidden">
+                        <div className="border-b border-white/5 bg-black/20 px-4 shrink-0">
                             <TabsList className="bg-transparent w-full justify-start h-12 gap-2">
                                 <TabsTrigger value="vulnerable" className="data-[state=active]:bg-primary/20 data-[state=active]:text-primary border border-transparent data-[state=active]:border-primary/20">
                                     <Bug className="w-4 h-4 mr-2" />
-                                    Vulnerable
+                                    Vulnerability
                                 </TabsTrigger>
                                 <TabsTrigger value="attack" className="data-[state=active]:bg-red-500/20 data-[state=active]:text-red-400 border border-transparent data-[state=active]:border-red-500/20">
                                     <Code className="w-4 h-4 mr-2" />
@@ -177,7 +237,7 @@ export default function ChallengeClient({ challengeId }: { challengeId: string }
                             </TabsList>
                         </div>
 
-                        <div className="flex-1 relative">
+                        <div className="flex-1 min-h-0 relative">
                             <div className="absolute inset-0">
                                 <CodeEditor
                                     code={code}
@@ -191,7 +251,7 @@ export default function ChallengeClient({ challengeId }: { challengeId: string }
                     </Tabs>
 
                     {/* Action Buttons */}
-                    <div className="p-4 border-t border-white/5 bg-black/20 backdrop-blur-md">
+                    <div className="p-4 border-t border-white/5 bg-black/20 backdrop-blur-md shrink-0">
                         <ActionButtons
                             selectedModule={selectedModule}
                             activeTab={activeTab}
@@ -202,19 +262,20 @@ export default function ChallengeClient({ challengeId }: { challengeId: string }
                             onExploit={handleExploit}
                             onReset={handleReset}
                             onSave={handleSave}
-                            isRunning={isRunning}
+                            isRunning={status === 'compiling' || status === 'deploying' || status === 'executing'}
+                            status={status}
                         />
                     </div>
                 </div>
 
                 {/* Right Panel - Console */}
-                <div className="col-span-12 md:col-span-3 border-l border-white/5 bg-black/40 flex flex-col">
-                    <div className="p-3 border-b border-white/5 font-mono text-xs font-bold flex items-center gap-2 text-muted-foreground bg-black/20">
+                <div className="col-span-12 md:col-span-3 border-l border-white/5 bg-black/40 flex flex-col min-h-0">
+                    <div className="p-3 border-b border-white/5 font-mono text-xs font-bold flex items-center gap-2 text-muted-foreground bg-black/20 shrink-0">
                         <Terminal className="w-3 h-3" />
                         TERMINAL_OUTPUT
                     </div>
-                    <div className="flex-1 overflow-hidden p-2">
-                        <VMConsole logs={logs} isRunning={isRunning} />
+                    <div className="flex-1 min-h-0 p-2 overflow-hidden">
+                        <VMConsole logs={logs} isRunning={status === 'executing'} />
                     </div>
                 </div>
             </div>

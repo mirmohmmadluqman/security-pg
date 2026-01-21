@@ -1,13 +1,13 @@
 import { SecurityModule } from './types'
 
 export const modules: SecurityModule[] = [
-  {
-    id: 'reentrancy',
-    title: 'Reentrancy Attack',
-    description: 'Learn how reentrancy attacks can drain funds from smart contracts',
-    difficulty: 'beginner',
-    category: 'Financial Security',
-    vulnerableCode: `// SPDX-License-Identifier: MIT
+    {
+        id: 'reentrancy',
+        title: 'Reentrancy Attack',
+        description: 'Learn how reentrancy attacks can drain funds from smart contracts',
+        difficulty: 'beginner',
+        category: 'Financial Security',
+        vulnerableCode: `// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
 contract VulnerableBank {
@@ -31,7 +31,7 @@ contract VulnerableBank {
         return address(this).balance;
     }
 }`,
-    attackCode: `// SPDX-License-Identifier: MIT
+        attackCode: `// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
 import "./VulnerableBank.sol";
@@ -62,7 +62,7 @@ contract Attacker {
         require(success, "Withdraw failed");
     }
 }`,
-    fixedCode: `// SPDX-License-Identifier: MIT
+        fixedCode: `// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
 contract FixedBank {
@@ -86,22 +86,22 @@ contract FixedBank {
         return address(this).balance;
     }
 }`,
-    explanation: 'Reentrancy occurs when a contract makes an external call to another contract that calls back into the original contract before the original execution completes.',
-    vulnerability: 'The contract updates the user balance AFTER the external call, allowing the attacker to call withdraw() multiple times before the balance is set to 0.',
-    impact: 'Attackers can drain all funds from the contract by repeatedly calling the withdraw function.',
-    prevention: 'Use the Checks-Effects-Interactions pattern: perform all state changes before making external calls.',
-    references: [
-      'https://docs.soliditylang.org/en/latest/security-considerations.html#re-entrancy',
-      'https://swcregistry.io/docs/SWC-107'
-    ]
-  },
-  {
-    id: 'access-control',
-    title: 'Access Control Misconfiguration',
-    description: 'Understand how improper access control can lead to unauthorized actions',
-    difficulty: 'beginner',
-    category: 'Access Control',
-    vulnerableCode: `// SPDX-License-Identifier: MIT
+        explanation: 'Reentrancy occurs when a contract makes an external call to another contract that calls back into the original contract before the original execution completes.',
+        vulnerability: 'The contract updates the user balance AFTER the external call, allowing the attacker to call withdraw() multiple times before the balance is set to 0.',
+        impact: 'Attackers can drain all funds from the contract by repeatedly calling the withdraw function.',
+        prevention: 'Use the Checks-Effects-Interactions pattern: perform all state changes before making external calls.',
+        references: [
+            'https://docs.soliditylang.org/en/latest/security-considerations.html#re-entrancy',
+            'https://swcregistry.io/docs/SWC-107'
+        ]
+    },
+    {
+        id: 'access-control',
+        title: 'Access Control Misconfiguration',
+        description: 'Understand how improper access control can lead to unauthorized actions',
+        difficulty: 'beginner',
+        category: 'Access Control',
+        vulnerableCode: `// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
 contract VulnerableVault {
@@ -130,7 +130,7 @@ contract VulnerableVault {
         return true;
     }
 }`,
-    attackCode: `// SPDX-License-Identifier: MIT
+        attackCode: `// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
 import "./VulnerableVault.sol";
@@ -150,7 +150,7 @@ contract Attacker {
         target.transfer(msg.sender, 1000 ether);
     }
 }`,
-    fixedCode: `// SPDX-License-Identifier: MIT
+        fixedCode: `// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
 contract FixedVault {
@@ -179,22 +179,22 @@ contract FixedVault {
         return true;
     }
 }`,
-    explanation: 'Access control vulnerabilities occur when functions lack proper permission checks, allowing unauthorized users to perform privileged actions.',
-    vulnerability: 'The mint() function is missing the onlyOwner modifier, allowing anyone to create new tokens.',
-    impact: 'Unauthorized users can mint unlimited tokens, destroying the token economics and potentially draining liquidity.',
-    prevention: 'Always implement proper access control using modifiers and check permissions before executing sensitive operations.',
-    references: [
-      'https://docs.soliditylang.org/en/latest/security-considerations.html#access-control',
-      'https://swcregistry.io/docs/SWC-105'
-    ]
-  },
-  {
-    id: 'integer-overflow',
-    title: 'Integer Overflow/Underflow',
-    description: 'Learn how arithmetic overflow can lead to unexpected behavior',
-    difficulty: 'intermediate',
-    category: 'Arithmetic Security',
-    vulnerableCode: `// SPDX-License-Identifier: MIT
+        explanation: 'Access control vulnerabilities occur when functions lack proper permission checks, allowing unauthorized users to perform privileged actions.',
+        vulnerability: 'The mint() function is missing the onlyOwner modifier, allowing anyone to create new tokens.',
+        impact: 'Unauthorized users can mint unlimited tokens, destroying the token economics and potentially draining liquidity.',
+        prevention: 'Always implement proper access control using modifiers and check permissions before executing sensitive operations.',
+        references: [
+            'https://docs.soliditylang.org/en/latest/security-considerations.html#access-control',
+            'https://swcregistry.io/docs/SWC-105'
+        ]
+    },
+    {
+        id: 'integer-overflow',
+        title: 'Integer Overflow/Underflow',
+        description: 'Learn how arithmetic overflow can lead to unexpected behavior',
+        difficulty: 'intermediate',
+        category: 'Arithmetic Security',
+        vulnerableCode: `// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
 contract VulnerableToken {
@@ -221,7 +221,7 @@ contract VulnerableToken {
         totalSupply -= amount;  // Potential underflow
     }
 }`,
-    attackCode: `// SPDX-License-Identifier: MIT
+        attackCode: `// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
 import "./VulnerableToken.sol";
@@ -244,7 +244,7 @@ contract Attacker {
         uint256 finalBalance = target.balances(address(this));
     }
 }`,
-    fixedCode: `// SPDX-License-Identifier: MIT
+        fixedCode: `// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
 contract FixedToken {
@@ -277,22 +277,22 @@ contract FixedToken {
         totalSupply -= amount;
     }
 }`,
-    explanation: 'Integer overflow and underflow occur when arithmetic operations exceed the maximum or minimum values that can be stored in a variable.',
-    vulnerability: 'Arithmetic operations without overflow checks can wrap around, causing unexpected behavior.',
-    impact: 'Attackers can manipulate token balances, bypass restrictions, or cause contract malfunction.',
-    prevention: 'Use SafeMath library (for Solidity <0.8.0) or built-in overflow checks (Solidity >=0.8.0).',
-    references: [
-      'https://docs.soliditylang.org/en/latest/security-considerations.html#integer-overflow-and-underflow',
-      'https://swcregistry.io/docs/SWC-101'
-    ]
-  },
-  {
-    id: 'unchecked-calls',
-    title: 'Unchecked External Calls',
-    description: 'Understand the dangers of not checking return values from external calls',
-    difficulty: 'intermediate',
-    category: 'External Interaction',
-    vulnerableCode: `// SPDX-License-Identifier: MIT
+        explanation: 'Integer overflow and underflow occur when arithmetic operations exceed the maximum or minimum values that can be stored in a variable.',
+        vulnerability: 'Arithmetic operations without overflow checks can wrap around, causing unexpected behavior.',
+        impact: 'Attackers can manipulate token balances, bypass restrictions, or cause contract malfunction.',
+        prevention: 'Use SafeMath library (for Solidity <0.8.0) or built-in overflow checks (Solidity >=0.8.0).',
+        references: [
+            'https://docs.soliditylang.org/en/latest/security-considerations.html#integer-overflow-and-underflow',
+            'https://swcregistry.io/docs/SWC-101'
+        ]
+    },
+    {
+        id: 'unchecked-calls',
+        title: 'Unchecked External Calls',
+        description: 'Understand the dangers of not checking return values from external calls',
+        difficulty: 'intermediate',
+        category: 'External Interaction',
+        vulnerableCode: `// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
 contract VulnerableAuction {
@@ -318,7 +318,7 @@ contract VulnerableAuction {
         ended = true;
     }
 }`,
-    attackCode: `// SPDX-License-Identifier: MIT
+        attackCode: `// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
 import "./VulnerableAuction.sol";
@@ -353,7 +353,7 @@ contract Attacker {
         // Previous bidder (rejector) lost their bid without refund
     }
 }`,
-    fixedCode: `// SPDX-License-Identifier: MIT
+        fixedCode: `// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
 contract FixedAuction {
@@ -380,22 +380,22 @@ contract FixedAuction {
         ended = true;
     }
 }`,
-    explanation: 'External calls can fail for various reasons. Not checking their return values can lead to unexpected state changes.',
-    vulnerability: 'The call to refund the previous bidder is not checked, so the bid succeeds even if the refund fails.',
-    impact: 'Users can lose funds when refunds fail, and the contract state becomes inconsistent.',
-    prevention: 'Always check the return value of external calls and handle failures appropriately.',
-    references: [
-      'https://docs.soliditylang.org/en/latest/security-considerations.html#low-level-call-functions',
-      'https://swcregistry.io/docs/SWC-104'
-    ]
-  },
-  {
-    id: 'tx-origin',
-    title: 'TX-Origin Authentication',
-    description: 'Learn the difference between tx.origin and msg.sender',
-    difficulty: 'beginner',
-    category: 'Authentication',
-    vulnerableCode: `// SPDX-License-Identifier: MIT
+        explanation: 'External calls can fail for various reasons. Not checking their return values can lead to unexpected state changes.',
+        vulnerability: 'The call to refund the previous bidder is not checked, so the bid succeeds even if the refund fails.',
+        impact: 'Users can lose funds when refunds fail, and the contract state becomes inconsistent.',
+        prevention: 'Always check the return value of external calls and handle failures appropriately.',
+        references: [
+            'https://docs.soliditylang.org/en/latest/security-considerations.html#low-level-call-functions',
+            'https://swcregistry.io/docs/SWC-104'
+        ]
+    },
+    {
+        id: 'tx-origin',
+        title: 'TX-Origin Authentication',
+        description: 'Learn the difference between tx.origin and msg.sender',
+        difficulty: 'beginner',
+        category: 'Authentication',
+        vulnerableCode: `// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
 contract VulnerableWallet {
@@ -421,7 +421,7 @@ contract VulnerableWallet {
     
     receive() external payable {}
 }`,
-    attackCode: `// SPDX-License-Identifier: MIT
+        attackCode: `// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
 import "./VulnerableWallet.sol";
@@ -449,7 +449,7 @@ contract Attacker {
         }
     }
 }`,
-    fixedCode: `// SPDX-License-Identifier: MIT
+        fixedCode: `// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
 contract FixedWallet {
@@ -475,22 +475,22 @@ contract FixedWallet {
     
     receive() external payable {}
 }`,
-    explanation: 'tx.origin refers to the original EOA that initiated the transaction, while msg.sender refers to the immediate caller.',
-    vulnerability: 'Using tx.origin for authentication allows phishing attacks where malicious contracts trick users into performing actions.',
-    impact: 'Attackers can steal funds from users by convincing them to interact with malicious contracts.',
-    prevention: 'Always use msg.sender for authentication, never tx.origin.',
-    references: [
-      'https://docs.soliditylang.org/en/latest/security-considerations.html#tx-origin',
-      'https://swcregistry.io/docs/SWC-115'
-    ]
-  },
-  {
-    id: 'dos',
-    title: 'Denial of Service (DoS)',
-    description: 'Learn how contracts can be vulnerable to denial of service attacks',
-    difficulty: 'advanced',
-    category: 'Availability',
-    vulnerableCode: `// SPDX-License-Identifier: MIT
+        explanation: 'tx.origin refers to the original EOA that initiated the transaction, while msg.sender refers to the immediate caller.',
+        vulnerability: 'Using tx.origin for authentication allows phishing attacks where malicious contracts trick users into performing actions.',
+        impact: 'Attackers can steal funds from users by convincing them to interact with malicious contracts.',
+        prevention: 'Always use msg.sender for authentication, never tx.origin.',
+        references: [
+            'https://docs.soliditylang.org/en/latest/security-considerations.html#tx-origin',
+            'https://swcregistry.io/docs/SWC-115'
+        ]
+    },
+    {
+        id: 'dos',
+        title: 'Denial of Service (DoS)',
+        description: 'Learn how contracts can be vulnerable to denial of service attacks',
+        difficulty: 'advanced',
+        category: 'Availability',
+        vulnerableCode: `// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
 contract VulnerableKing {
@@ -520,7 +520,7 @@ contract VulnerableKing {
         prize = 0;
     }
 }`,
-    attackCode: `// SPDX-License-Identifier: MIT
+        attackCode: `// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
 import "./VulnerableKing.sol";
@@ -553,7 +553,7 @@ contract Attacker {
         // The contract is stuck forever!
     }
 }`,
-    fixedCode: `// SPDX-License-Identifier: MIT
+        fixedCode: `// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
 contract FixedKing {
@@ -591,22 +591,22 @@ contract FixedKing {
         prize = 0;
     }
 }`,
-    explanation: 'DoS vulnerabilities occur when an attacker can prevent normal contract operation, often through failing external calls.',
-    vulnerability: 'The contract tries to send ETH to the previous king, which can fail if the king is a contract that rejects ETH.',
-    impact: 'The contract becomes permanently stuck - no one can become king after a DoS contract takes the throne.',
-    prevention: 'Use withdrawal patterns instead of direct transfers, or implement proper error handling for external calls.',
-    references: [
-      'https://docs.soliditylang.org/en/latest/security-considerations.html#denial-of-service',
-      'https://swcregistry.io/docs/SWC-113'
-    ]
-  },
-  {
-    id: 'storage-collision',
-    title: 'Storage Collision / Proxy Bug',
-    description: 'Understand how storage layout can lead to vulnerabilities in proxy contracts',
-    difficulty: 'advanced',
-    category: 'Storage Security',
-    vulnerableCode: `// SPDX-License-Identifier: MIT
+        explanation: 'DoS vulnerabilities occur when an attacker can prevent normal contract operation, often through failing external calls.',
+        vulnerability: 'The contract tries to send ETH to the previous king, which can fail if the king is a contract that rejects ETH.',
+        impact: 'The contract becomes permanently stuck - no one can become king after a DoS contract takes the throne.',
+        prevention: 'Use withdrawal patterns instead of direct transfers, or implement proper error handling for external calls.',
+        references: [
+            'https://docs.soliditylang.org/en/latest/security-considerations.html#denial-of-service',
+            'https://swcregistry.io/docs/SWC-113'
+        ]
+    },
+    {
+        id: 'storage-collision',
+        title: 'Storage Collision / Proxy Bug',
+        description: 'Understand how storage layout can lead to vulnerabilities in proxy contracts',
+        difficulty: 'advanced',
+        category: 'Storage Security',
+        vulnerableCode: `// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
 contract VulnerableImplementation {
@@ -647,7 +647,7 @@ contract VulnerableProxy {
         }
     }
 }`,
-    attackCode: `// SPDX-License-Identifier: MIT
+        attackCode: `// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
 import "./VulnerableProxy.sol";
@@ -677,7 +677,7 @@ contract Attacker {
         // Attacker can change implementation to malicious contract
     }
 }`,
-    fixedCode: `// SPDX-License-Identifier: MIT
+        fixedCode: `// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
 contract FixedImplementation {
@@ -728,22 +728,22 @@ contract FixedProxy {
         }
     }
 }`,
-    explanation: 'Storage collision occurs when proxy and implementation contracts have conflicting storage layouts, allowing unauthorized state changes.',
-    vulnerability: 'The proxy and implementation both use storage slot 0 for different variables, causing collisions during delegatecall.',
-    impact: 'Attackers can overwrite proxy admin address and gain control of the proxy contract.',
-    prevention: 'Use proper storage slot separation, EIP-1967 standard, or OpenZeppelin upgradeable contracts.',
-    references: [
-      'https://eips.ethereum.org/EIPS/eip-1967',
-      'https://docs.openzeppelin.com/contracts/4.x/api/proxy'
-    ]
-  },
-  {
-    id: 'frontrunning',
-    title: 'Front-Running',
-    description: 'Learn how transaction ordering can be exploited for profit',
-    difficulty: 'intermediate',
-    category: 'MEV Security',
-    vulnerableCode: `// SPDX-License-Identifier: MIT
+        explanation: 'Storage collision occurs when proxy and implementation contracts have conflicting storage layouts, allowing unauthorized state changes.',
+        vulnerability: 'The proxy and implementation both use storage slot 0 for different variables, causing collisions during delegatecall.',
+        impact: 'Attackers can overwrite proxy admin address and gain control of the proxy contract.',
+        prevention: 'Use proper storage slot separation, EIP-1967 standard, or OpenZeppelin upgradeable contracts.',
+        references: [
+            'https://eips.ethereum.org/EIPS/eip-1967',
+            'https://docs.openzeppelin.com/contracts/4.x/api/proxy'
+        ]
+    },
+    {
+        id: 'frontrunning',
+        title: 'Front-Running',
+        description: 'Learn how transaction ordering can be exploited for profit',
+        difficulty: 'intermediate',
+        category: 'MEV Security',
+        vulnerableCode: `// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
 contract VulnerableDEX {
@@ -771,7 +771,7 @@ contract VulnerableDEX {
         return balances[token][user];
     }
 }`,
-    attackCode: `// SPDX-License-Identifier: MIT
+        attackCode: `// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
 import "./VulnerableDEX.sol";
@@ -814,7 +814,7 @@ contract Attacker {
         target.swap(tokenB, tokenA, attackAmount * 2);
     }
 }`,
-    fixedCode: `// SPDX-License-Identifier: MIT
+        fixedCode: `// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
 contract FixedDEX {
@@ -885,13 +885,13 @@ contract FixedDEX {
         prices[token] = price;
     }
 }`,
-    explanation: 'Front-running occurs when an attacker observes pending transactions and executes their own transaction first to profit from the price movement.',
-    vulnerability: 'The DEX allows immediate price updates and swaps, enabling attackers to see and front-run large trades.',
-    impact: 'Traders get worse execution prices, and attackers can profit at the expense of regular users.',
-    prevention: 'Use commit-reveal schemes, batch auctions, or implement slippage protection and minimum execution delays.',
-    references: [
-      'https://ethereum.org/en/developers/docs/mev/',
-      'https://swcregistry.io/docs/SWC-114'
-    ]
-  }
+        explanation: 'Front-running occurs when an attacker observes pending transactions and executes their own transaction first to profit from the price movement.',
+        vulnerability: 'The DEX allows immediate price updates and swaps, enabling attackers to see and front-run large trades.',
+        impact: 'Traders get worse execution prices, and attackers can profit at the expense of regular users.',
+        prevention: 'Use commit-reveal schemes, batch auctions, or implement slippage protection and minimum execution delays.',
+        references: [
+            'https://ethereum.org/en/developers/docs/mev/',
+            'https://swcregistry.io/docs/SWC-114'
+        ]
+    }
 ]

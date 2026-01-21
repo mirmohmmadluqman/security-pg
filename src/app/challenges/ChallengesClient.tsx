@@ -50,7 +50,7 @@ export default function ChallengesClient() {
                     transition={{ duration: 0.5, delay: 0.2 }}
                     className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16"
                 >
-                    {modules.map((module, index) => (
+                    {modules.filter(m => !m.isRealWorld).map((module, index) => (
                         <Link key={module.id} href={`/challenges/${module.id}`}>
                             <ModuleCard module={module} index={index} />
                         </Link>
@@ -82,17 +82,13 @@ export default function ChallengesClient() {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.5, delay: 0.4 }}
-                    className="glass-card p-8 rounded-xl border border-white/10 text-center"
+                    className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16"
                 >
-                    <div className="flex flex-col items-center gap-4">
-                        <div className="p-4 rounded-full bg-yellow-500/10 text-yellow-400">
-                            <AlertTriangle className="w-8 h-8" />
-                        </div>
-                        <h3 className="text-xl font-bold">Real-World Exploits Coming Soon</h3>
-                        <p className="text-muted-foreground max-w-lg">
-                            We&apos;re working on detailed case studies of major blockchain exploits including The DAO Hack, Parity Wallet, Ronin Bridge, and more. Stay tuned for in-depth analysis and lessons learned.
-                        </p>
-                    </div>
+                    {modules.filter(m => m.isRealWorld).map((module, index) => (
+                        <Link key={module.id} href={`/challenges/exploits/${module.id}`}>
+                            <ModuleCard module={module} index={index} />
+                        </Link>
+                    ))}
                 </motion.div>
             </div>
         </div>

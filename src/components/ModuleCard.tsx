@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
 import { SecurityModule } from '@/lib/types'
-import { LucideIcon, Bug, Zap, Lock, Shield, Cpu } from 'lucide-react'
+import { LucideIcon, Bug, Zap, Lock, Shield, Cpu, ExternalLink, DollarSign, Calendar } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
 
@@ -12,7 +12,8 @@ interface ModuleCardProps {
 }
 
 // Helper function to get default icon based on module id
-function getDefaultIcon(id: string): LucideIcon {
+function getDefaultIcon(id: string, isRealWorld?: boolean): LucideIcon {
+    if (isRealWorld) return ExternalLink
     if (id.includes('reentrancy')) return Zap
     if (id.includes('access')) return Lock
     if (id.includes('overflow')) return Cpu
@@ -21,7 +22,7 @@ function getDefaultIcon(id: string): LucideIcon {
 }
 
 export function ModuleCard({ module, icon, onClick, index }: ModuleCardProps) {
-    const Icon = icon || getDefaultIcon(module.id)
+    const Icon = icon || getDefaultIcon(module.id, module.isRealWorld)
     return (
         <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -58,10 +59,29 @@ export function ModuleCard({ module, icon, onClick, index }: ModuleCardProps) {
                         {module.description}
                     </p>
 
-                    <div className="mt-auto pt-4 flex items-center text-xs text-muted-foreground font-mono">
-                        <span className="w-2 h-2 rounded-full bg-green-500 mr-2 animate-pulse" />
-                        Active Challenge
-                    </div>
+                    {module.isRealWorld ? (
+                        <div className="mt-auto pt-4 flex flex-col gap-2">
+                            <div className="flex items-center justify-between text-xs font-mono">
+                                <div className="flex items-center text-red-400">
+                                    <DollarSign className="w-3 h-3 mr-1" />
+                                    Loss: {module.loss}
+                                </div>
+                                <div className="flex items-center text-muted-foreground">
+                                    <Calendar className="w-3 h-3 mr-1" />
+                                    {module.date}
+                                </div>
+                            </div>
+                            <div className="flex items-center text-xs text-blue-400 font-mono">
+                                <span className="w-2 h-2 rounded-full bg-blue-500 mr-2" />
+                                Case Study
+                            </div>
+                        </div>
+                    ) : (
+                        <div className="mt-auto pt-4 flex items-center text-xs text-muted-foreground font-mono">
+                            <span className="w-2 h-2 rounded-full bg-green-500 mr-2 animate-pulse" />
+                            Active Challenge
+                        </div>
+                    )}
                 </div>
             </div>
         </motion.div>
