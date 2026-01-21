@@ -160,8 +160,8 @@ export default function SecurityPlayground() {
               Master the art of smart contract security. Exploit real vulnerabilities, patch code, and level up your auditing skills.
             </p>
             <div className="flex justify-center gap-6">
-              <Button size="lg" className="text-lg px-8 h-14 rounded-full bg-primary hover:bg-primary/90 shadow-lg shadow-primary/25 border-0 font-bold">
-                Start Hacking
+              <Button size="lg" className="text-lg px-8 h-14 rounded-full bg-primary hover:bg-primary/90 shadow-lg shadow-primary/25 border-0 font-bold" asChild>
+                <a href="/challenges">Start Hacking</a>
               </Button>
               <Button size="lg" variant="outline" className="text-lg px-8 h-14 rounded-full border-white/10 hover:bg-white/5 backdrop-blur-sm">
                 View Documentation

@@ -32,7 +32,7 @@ export function ThemeSelector() {
                     <span className="sr-only">Toggle theme</span>
                 </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
+            <DropdownMenuContent align="end" className="bg-black/80 backdrop-blur-xl border-white/10">
                 {themes.map((t) => (
                     <DropdownMenuItem key={t.name} onClick={() => setTheme(t.name)}>
                         <span className={theme === t.name ? "font-bold" : ""}>
