@@ -34,7 +34,7 @@ export function InfoPanel({ module }: InfoPanelProps) {
           </Badge>
         </div>
 
-        <p className="text-sm text-slate-400 leading-relaxed border-l-2 border-primary/30 pl-4">
+        <p className="text-sm text-slate-400 leading-relaxed border-l-2 border-primary/30 pl-4 whitespace-pre-wrap">
           {module.description}
         </p>
       </div>
@@ -69,7 +69,7 @@ export function InfoPanel({ module }: InfoPanelProps) {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-sm leading-relaxed text-slate-300">
+                <p className="text-sm leading-relaxed text-slate-300 whitespace-pre-wrap">
                   {module.vulnerability}
                 </p>
               </CardContent>
@@ -83,7 +83,7 @@ export function InfoPanel({ module }: InfoPanelProps) {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-sm leading-relaxed text-slate-300">
+                <p className="text-sm leading-relaxed text-slate-300 whitespace-pre-wrap">
                   {module.explanation}
                 </p>
               </CardContent>
@@ -99,7 +99,7 @@ export function InfoPanel({ module }: InfoPanelProps) {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-sm leading-relaxed text-slate-300">
+                <p className="text-sm leading-relaxed text-slate-300 whitespace-pre-wrap">
                   {module.impact}
                 </p>
               </CardContent>
@@ -115,7 +115,7 @@ export function InfoPanel({ module }: InfoPanelProps) {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-sm leading-relaxed text-slate-300">
+                <p className="text-sm leading-relaxed text-slate-300 whitespace-pre-wrap">
                   {module.prevention}
                 </p>
               </CardContent>

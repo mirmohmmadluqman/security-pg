@@ -40,6 +40,13 @@ export default function ChallengeClient({ challengeId }: { challengeId: string }
         }
     }, [selectedModule])
 
+    // Reset compilation whenever code changes
+    useEffect(() => {
+        setIsCompiled(false)
+        setIsDeployed(false)
+        setStatus('idle')
+    }, [code])
+
     if (!mounted) return null
 
     if (!selectedModule) {
@@ -67,6 +74,12 @@ export default function ChallengeClient({ challengeId }: { challengeId: string }
 
             case 'integer-overflow':
                 return normalizedCode.includes('require') && (normalizedCode.includes('>=') || normalizedCode.includes('<=') || normalizedCode.includes('overflow detected'))
+
+            case 'arcadia-finance':
+                // Check if they are validating the router address against a whitelist
+                return normalizedCode.includes('whitelistedrouters[router]') ||
+                    normalizedCode.includes('require(whitelistedrouters[router]') ||
+                    normalizedCode.includes('iswhitelisted(router)')
 
             default:
                 // Fallback: if they are on the fixed tab and the code is roughly what we expect
@@ -96,12 +109,6 @@ export default function ChallengeClient({ challengeId }: { challengeId: string }
         }
     }
 
-    // Reset compilation whenever code changes
-    useEffect(() => {
-        setIsCompiled(false)
-        setIsDeployed(false)
-        setStatus('idle')
-    }, [code])
 
     const handleCompile = () => {
         setStatus('compiling')
