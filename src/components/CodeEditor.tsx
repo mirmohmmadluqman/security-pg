@@ -1,7 +1,11 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
-import Editor from '@monaco-editor/react'
+import { useEffect, useRef, useState } from 'react'
+import Editor, { loader } from '@monaco-editor/react'
+import { Skeleton } from '@/components/ui/skeleton'
+
+// Optimize Monaco loading
+loader.config({ paths: { vs: 'https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs' } })
 
 interface CodeEditorProps {
   code: string
@@ -12,154 +16,126 @@ interface CodeEditorProps {
 }
 
 export function CodeEditor({ code, language, isDarkMode, readOnly = false, onChange }: CodeEditorProps) {
+  const [isEditorReady, setIsEditorReady] = useState(false)
   const editorRef = useRef<any>(null)
 
   const handleEditorDidMount = (editor: any, monaco: any) => {
     editorRef.current = editor
+    setIsEditorReady(true)
 
-    // Configure Solidity language support
-    monaco.languages.register({ id: 'solidity' })
-    
-    monaco.languages.setMonarchTokensProvider('solidity', {
-      tokenizer: {
-        root: [
-          // Solidity keywords
-          [/\b(contract|function|modifier|event|struct|enum|library|interface|using|pragma|solidity)\b/, 'keyword'],
-          [/\b(address|uint|int|bool|string|bytes|mapping|storage|memory|calldata)\b/, 'type'],
-          [/\b(public|private|internal|external|view|pure|payable|constant|immutable|virtual|override)\b/, 'keyword'],
-          [/\b(if|else|for|while|do|break|continue|return|throw|revert|require|assert|emit)\b/, 'keyword'],
-          [/\b(msg|block|tx|this|super|now|suicide|selfdestruct)\b/, 'variable.predefined'],
-          [/\b(true|false|null|nil|undefined)\b/, 'constant.language'],
-          [/\b(wei|ether|seconds|minutes|hours|days|weeks)\b/, 'variable.predefined'],
-          
-          // Numbers
-          [/\d*\.\d+([eE][\-+]?\d+)?/, 'number.float'],
-          [/0[xX][0-9a-fA-F]+/, 'number.hex'],
-          [/\d+/, 'number'],
-          
-          // Strings
-          [/"([^"\\]|\\.)*$/, 'string.invalid'],
-          [/"/, 'string', '@string_double'],
-          [/'([^'\\]|\\.)*$/, 'string.invalid'],
-          [/'/, 'string', '@string_single'],
-          
-          // Comments
-          [/\/\/.*$/, 'comment'],
-          [/\/\*/, 'comment', '@comment'],
-          
-          // Operators
-          [/[+\-*\/=<>!&|%^~?:]/, 'operators'],
-          
-          // Punctuation
-          [/[{}()\[\];,.]/, 'delimiter'],
-          
-          // Identifiers
-          [/[a-zA-Z_]\w*/, 'identifier'],
-        ],
-        
-        string_double: [
-          [/[^\\"]+/, 'string'],
-          [/\\./, 'string.escape'],
-          [/"/, 'string', '@pop']
-        ],
-        
-        string_single: [
-          [/[^\\']+/, 'string'],
-          [/\\./, 'string.escape'],
-          [/'/, 'string', '@pop']
-        ],
-        
-        comment: [
-          [/[^\/*]+/, 'comment'],
-          [/\*\//, 'comment', '@pop'],
-          [/[\/*]/, 'comment']
-        ]
-      }
-    })
+    // Register Solidity
+    if (!monaco.languages.getLanguages().some((l: any) => l.id === 'solidity')) {
+      monaco.languages.register({ id: 'solidity' })
+      monaco.languages.setMonarchTokensProvider('solidity', {
+        tokenizer: {
+          root: [
+            [/\b(contract|function|modifier|event|struct|enum|library|interface|using|pragma|solidity)\b/, 'keyword'],
+            [/\b(address|uint|int|bool|string|bytes|mapping|storage|memory|calldata)\b/, 'type'],
+            [/\b(public|private|internal|external|view|pure|payable|constant|immutable|virtual|override)\b/, 'keyword'],
+            [/\b(if|else|for|while|do|break|continue|return|throw|revert|require|assert|emit)\b/, 'keyword'],
+            [/\b(msg|block|tx|this|super|now|suicide|selfdestruct)\b/, 'variable.predefined'],
+            [/\b(true|false|null|nil|undefined)\b/, 'constant.language'],
+            [/"([^"\\]|\\.)*$/, 'string.invalid'],
+            [/"/, 'string', '@string_double'],
+            [/\d+/, 'number'],
+            [/[{}]/, 'delimiter.bracket'],
+            [/[a-zA-Z_]\w*/, 'identifier'],
+            [/\/\/.*$/, 'comment'],
+          ],
+          string_double: [
+            [/[^\\"]+/, 'string'],
+            [/\\./, 'string.escape'],
+            [/"/, 'string', '@pop']
+          ],
+        }
+      })
+    }
 
-    // Set theme
-    monaco.editor.defineTheme('solidity-dark', {
+    // Custom Web3 Dark Theme
+    monaco.editor.defineTheme('web3-dark', {
       base: 'vs-dark',
       inherit: true,
       rules: [
-        { token: 'keyword', foreground: '569cd6' },
-        { token: 'type', foreground: '4ec9b0' },
-        { token: 'string', foreground: 'ce9178' },
-        { token: 'number', foreground: 'b5cea8' },
-        { token: 'comment', foreground: '6a9955' },
-        { token: 'variable.predefined', foreground: '9cdcfe' },
-        { token: 'constant.language', foreground: '569cd6' },
-        { token: 'operators', foreground: 'd4d4d4' },
-        { token: 'delimiter', foreground: 'd4d4d4' },
-        { token: 'identifier', foreground: 'd4d4d4' }
+        { token: 'keyword', foreground: 'c084fc', fontStyle: 'bold' }, // Purple-400
+        { token: 'type', foreground: '22d3ee' }, // Cyan-400
+        { token: 'string', foreground: '4ade80' }, // Green-400
+        { token: 'number', foreground: 'f472b6' }, // Pink-400
+        { token: 'comment', foreground: '64748b', fontStyle: 'italic' }, // Slate-500
+        { token: 'variable.predefined', foreground: 'fbbf24' }, // Amber-400
+        { token: 'identifier', foreground: 'e2e8f0' }, // Slate-200
+        { token: 'delimiter', foreground: '94a3b8' }, // Slate-400
       ],
       colors: {
-        'editor.background': '#1e1e1e',
-        'editor.foreground': '#d4d4d4'
+        'editor.background': '#00000000', // Transparent
+        'editor.foreground': '#e2e8f0',
+        'editor.lineHighlightBackground': '#ffffff0a',
+        'editorCursor.foreground': '#22d3ee',
+        'editorIndentGuide.background': '#ffffff1a',
+        'editor.selectionBackground': '#22d3ee33',
+        'scrollbarSlider.background': '#ffffff1a',
+        'scrollbarSlider.hoverBackground': '#ffffff33',
+        'scrollbarSlider.activeBackground': '#ffffff4d',
+        'widget.shadow': '#00000000',
       }
     })
 
-    monaco.editor.defineTheme('solidity-light', {
-      base: 'vs',
-      inherit: true,
-      rules: [
-        { token: 'keyword', foreground: '0000ff' },
-        { token: 'type', foreground: '267f99' },
-        { token: 'string', foreground: 'a31515' },
-        { token: 'number', foreground: '098658' },
-        { token: 'comment', foreground: '008000' },
-        { token: 'variable.predefined', foreground: '001080' },
-        { token: 'constant.language', foreground: '0000ff' },
-        { token: 'operators', foreground: '000000' },
-        { token: 'delimiter', foreground: '000000' },
-        { token: 'identifier', foreground: '000000' }
-      ],
-      colors: {
-        'editor.background': '#ffffff',
-        'editor.foreground': '#000000'
-      }
-    })
-
-    // Set the appropriate theme
-    monaco.editor.setTheme(isDarkMode ? 'solidity-dark' : 'solidity-light')
+    monaco.editor.setTheme('web3-dark')
   }
 
+  // Update theme when prop changes
   useEffect(() => {
     if (editorRef.current) {
       const monaco = (window as any).monaco
       if (monaco) {
-        monaco.editor.setTheme(isDarkMode ? 'solidity-dark' : 'solidity-light')
+        monaco.editor.setTheme(isDarkMode ? 'web3-dark' : 'vs')
       }
     }
   }, [isDarkMode])
 
   return (
-    <div className="h-full">
+    <div className="h-full relative font-mono text-sm">
+      {!isEditorReady && (
+        <div className="absolute inset-0 p-4 space-y-2">
+          <Skeleton className="h-4 w-3/4 bg-white/5" />
+          <Skeleton className="h-4 w-1/2 bg-white/5" />
+          <Skeleton className="h-4 w-full bg-white/5" />
+          <Skeleton className="h-4 w-2/3 bg-white/5" />
+        </div>
+      )}
       <Editor
         height="100%"
+        defaultLanguage="solidity"
         language="solidity"
         value={code}
-        theme={isDarkMode ? 'vs-dark' : 'vs-light'}
+        theme="web3-dark"
         onChange={(value) => onChange?.(value || '')}
         onMount={handleEditorDidMount}
+        loading=""
         options={{
           readOnly,
           minimap: { enabled: false },
           fontSize: 14,
+          fontFamily: "'Fira Code', 'JetBrains Mono', monospace",
+          fontLigatures: true,
           lineNumbers: 'on',
           scrollBeyondLastLine: false,
           automaticLayout: true,
+          padding: { top: 16, bottom: 16 },
           tabSize: 4,
-          insertSpaces: false,
+          insertSpaces: true,
           wordWrap: 'on',
           bracketPairColorization: { enabled: true },
-          guides: {
-            bracketPairs: true,
-            indentation: true
-          },
-          suggest: {
-            showKeywords: true,
-            showSnippets: true
+          smoothScrolling: true,
+          cursorBlinking: 'smooth',
+          cursorSmoothCaretAnimation: 'on',
+          renderLineHighlight: 'all',
+          contextmenu: true,
+          scrollbar: {
+            vertical: 'visible',
+            horizontal: 'visible',
+            useShadows: false,
+            verticalScrollbarSize: 10,
+            horizontalScrollbarSize: 10
           }
         }}
       />

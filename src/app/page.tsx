@@ -3,14 +3,14 @@
 import { useState, useEffect } from 'react'
 import { SecurityModule } from '@/lib/types'
 import { modules } from '@/lib/modules'
-import { ModuleSelector } from '@/components/ModuleSelector'
+import { ModuleCard } from '@/components/ModuleCard'
 import { CodeEditor } from '@/components/CodeEditor'
 import { InfoPanel } from '@/components/InfoPanel'
 import { ActionButtons } from '@/components/ActionButtons'
 import { VMConsole } from '@/components/VMConsole'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { ArrowLeft, Code, Bug, Shield, Terminal, Cpu, Lock } from 'lucide-react'
+import { ArrowLeft, Code, Bug, Shield, Terminal, Cpu, Lock, Zap } from 'lucide-react'
 import { ThemeSelector } from '@/components/ThemeSelector'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useTheme } from 'next-themes'
@@ -25,12 +25,10 @@ export default function SecurityPlayground() {
   const { theme } = useTheme()
   const [mounted, setMounted] = useState(false)
 
-  // Prevent hydration mismatch
   useEffect(() => {
     setMounted(true)
   }, [])
 
-  // Initialize code when module is selected
   const handleSelectModule = (module: SecurityModule) => {
     setSelectedModule(module)
     setActiveTab('vulnerable')
@@ -38,13 +36,11 @@ export default function SecurityPlayground() {
     setLogs([])
   }
 
-  // Go back to module selection
   const handleBackToModules = () => {
     setSelectedModule(null)
     setLogs([])
   }
 
-  // Handle tab change
   const handleTabChange = (tab: string) => {
     const newTab = tab as 'vulnerable' | 'attack' | 'fixed'
     setActiveTab(newTab)
@@ -64,7 +60,6 @@ export default function SecurityPlayground() {
     }
   }
 
-  // Action handlers
   const handleCompile = () => {
     setLogs([...logs, '🔨 Compiling contract...'])
     setTimeout(() => {
@@ -121,103 +116,137 @@ export default function SecurityPlayground() {
     setLogs([...logs, '💾 Progress saved!'])
   }
 
+  // Icons mapping for categories (simple approximation)
+  const getIconForModule = (id: string) => {
+    if (id.includes('reentrancy')) return Zap
+    if (id.includes('access')) return Lock
+    if (id.includes('overflow')) return Calculator
+    if (id.includes('dos')) return ShieldAlert
+    return Bug
+  }
+
+  // Lucide icons are components, so we need to import them or map them
+  const Calculator = Cpu
+  const ShieldAlert = Shield
+
   if (!mounted) return null
 
-  // If no module is selected, show module selection (Hero Section)
   if (!selectedModule) {
     return (
-      <div className="min-h-screen bg-background transition-colors duration-300">
-        <div className="max-w-7xl mx-auto px-6 py-8">
+      <div className="min-h-screen relative overflow-hidden">
+        {/* Background Gradients */}
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-purple-600/20 rounded-full blur-[128px] pointer-events-none" />
+        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-cyan-600/20 rounded-full blur-[128px] pointer-events-none" />
 
-
-          <header className="flex justify-between items-center mb-16">
+        <div className="max-w-7xl mx-auto px-6 py-8 relative z-10">
+          <header className="flex justify-between items-center mb-20">
             <Logo />
             <ThemeSelector />
           </header>
 
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="text-center mb-20"
+            transition={{ duration: 0.8 }}
+            className="text-center mb-24 animate-float"
           >
-            <h1 className="text-6xl md:text-7xl font-extrabold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent pb-2">
-              Master Smart Contract Security
+            <div className="inline-block mb-4 px-4 py-1.5 rounded-full border border-primary/30 bg-primary/10 text-primary text-sm font-medium backdrop-blur-sm">
+              🚀 Interactive Web3 Security Environment
+            </div>
+            <h1 className="text-6xl md:text-8xl font-black mb-6 tracking-tight">
+              Security <span className="text-gradient">Playground</span>
             </h1>
-            <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto mb-8">
-              Interactive playground to learn, exploit, and fix real-world Ethereum vulnerabilities in a safe environment.
+            <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed">
+              Master the art of smart contract security. Exploit real vulnerabilities, patch code, and level up your auditing skills.
             </p>
-            <div className="flex justify-center gap-4">
-              <Button size="lg" className="text-lg px-8 h-14 rounded-full shadow-lg shadow-primary/20">
+            <div className="flex justify-center gap-6">
+              <Button size="lg" className="text-lg px-8 h-14 rounded-full bg-primary hover:bg-primary/90 shadow-lg shadow-primary/25 border-0 font-bold">
                 Start Hacking
               </Button>
-              <Button size="lg" variant="outline" className="text-lg px-8 h-14 rounded-full">
+              <Button size="lg" variant="outline" className="text-lg px-8 h-14 rounded-full border-white/10 hover:bg-white/5 backdrop-blur-sm">
                 View Documentation
               </Button>
             </div>
           </motion.div>
 
-          <div className="grid md:grid-cols-3 gap-8 mb-20">
+          {/* Stats / Features Grid */}
+          <div className="grid md:grid-cols-3 gap-6 mb-24">
             {[
-              { icon: Terminal, title: "Real Exploits", desc: "Execute actual attack vectors against vulnerable contracts in a local VM." },
-              { icon: Bug, title: "Vulnerability Database", desc: "Comprehensive library of common security pitfalls like Reentrancy and Overflow." },
-              { icon: Lock, title: "Fix & Verify", desc: "Patch the code and run automated tests to verify your security fixes." }
-            ].map((item, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 + (i * 0.1) }}
-                className="p-8 rounded-2xl bg-card border border-border hover:border-primary/50 transition-all hover:shadow-lg group"
-              >
-                <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-6 group-hover:bg-primary/20 transition-colors">
-                  <item.icon className="w-6 h-6 text-primary" />
+              { icon: Terminal, title: "Real-World Exploits", desc: "Execute actual attack vectors in a sandboxed EVM." },
+              { icon: Shield, title: "Interactive Defense", desc: "Patch vulnerabilities and verify fixes instantly." },
+              { icon: Zap, title: "Instant Feedback", desc: "Real-time compilation and execution logs." }
+            ].map((feature, i) => (
+              <div key={i} className="glass p-8 rounded-2xl flex flex-col items-center text-center hover:scale-105 transition-transform duration-300">
+                <div className="p-4 rounded-full bg-primary/10 text-primary mb-4">
+                  <feature.icon size={32} />
                 </div>
-                <h3 className="text-xl font-bold mb-3">{item.title}</h3>
-                <p className="text-muted-foreground">{item.desc}</p>
-              </motion.div>
+                <h3 className="text-xl font-bold mb-2">{feature.title}</h3>
+                <p className="text-muted-foreground">{feature.desc}</p>
+              </div>
             ))}
           </div>
 
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 0.6 }}
-            className="bg-card border border-border rounded-3xl p-8 md:p-12 shadow-2xl"
+            transition={{ delay: 0.4 }}
           >
-            <h2 className="text-3xl font-bold mb-8 text-center">
-              Choose a Challenge
-            </h2>
-            <ModuleSelector modules={modules} onSelectModule={handleSelectModule} />
+            <div className="flex items-center justify-between mb-8">
+              <h2 className="text-3xl font-bold">Active Challenges</h2>
+              <div className="flex gap-2">
+                {/* Filter buttons could go here */}
+              </div>
+            </div>
+
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {modules.map((module, index) => (
+                <ModuleCard
+                  key={module.id}
+                  module={module}
+                  icon={getIconForModule(module.id)}
+                  index={index}
+                  onClick={handleSelectModule}
+                />
+              ))}
+            </div>
           </motion.div>
         </div>
       </div>
     )
   }
 
-  // Module detail view with code editor and learning interface
+  // IDE View
   return (
-    <div className="min-h-screen bg-background transition-colors duration-300 flex flex-col">
+    <div className="min-h-screen bg-background flex flex-col relative overflow-hidden">
+      {/* Background noise/gradient for IDE */}
+      <div className="absolute inset-0 pointer-events-none opacity-20">
+        <div className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] bg-primary/30 blur-[100px] rounded-full" />
+      </div>
+
       {/* Header */}
-      <header className="border-b border-border bg-card px-6 py-4 flex items-center justify-between sticky top-0 z-50">
+      <header className="h-16 glass border-b border-white/5 flex items-center justify-between px-6 sticky top-0 z-50">
         <div className="flex items-center gap-4">
           <Button
             variant="ghost"
             size="sm"
             onClick={handleBackToModules}
-            className="gap-2 hover:bg-muted"
+            className="gap-2 hover:bg-white/5 text-muted-foreground hover:text-foreground transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
             Back
           </Button>
-          <div className="h-6 w-px bg-border" />
-          <h1 className="text-xl font-bold text-foreground">
+          <div className="h-6 w-px bg-white/10" />
+          <h1 className="text-lg font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-white/60">
             {selectedModule.title}
           </h1>
         </div>
         <div className="flex items-center gap-4">
-          <div className="text-sm text-muted-foreground hidden md:block">
-            <span className="font-mono text-xs bg-muted px-2 py-1 rounded">Solidity 0.8.0</span>
+          <div className="px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-xs font-mono text-primary flex items-center gap-2">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+            </span>
+            EVM Connected
           </div>
           <ThemeSelector />
         </div>
@@ -226,67 +255,50 @@ export default function SecurityPlayground() {
       {/* Main Content */}
       <div className="flex-1 grid grid-cols-12 overflow-hidden">
         {/* Left Panel - Info */}
-        <div className="col-span-12 md:col-span-3 border-r border-border bg-card overflow-y-auto">
+        <div className="col-span-12 md:col-span-3 border-r border-white/5 bg-card/30 backdrop-blur-sm overflow-y-auto custom-scrollbar">
           <InfoPanel module={selectedModule} />
         </div>
 
         {/* Middle Panel - Code Editor */}
-        <div className="col-span-12 md:col-span-6 flex flex-col bg-background min-h-[500px]">
+        <div className="col-span-12 md:col-span-6 flex flex-col min-h-[500px] bg-background/50">
           <Tabs value={activeTab} onValueChange={handleTabChange} className="flex-1 flex flex-col">
-            <div className="border-b border-border bg-card px-4">
-              <TabsList className="bg-transparent w-full justify-start h-12">
-                <TabsTrigger value="vulnerable" className="gap-2 data-[state=active]:bg-muted">
-                  <Bug className="w-4 h-4 text-destructive" />
+            <div className="border-b border-white/5 bg-black/20 px-4">
+              <TabsList className="bg-transparent w-full justify-start h-12 gap-2">
+                <TabsTrigger value="vulnerable" className="data-[state=active]:bg-primary/20 data-[state=active]:text-primary border border-transparent data-[state=active]:border-primary/20">
+                  <Bug className="w-4 h-4 mr-2" />
                   Vulnerable
                 </TabsTrigger>
-                <TabsTrigger value="attack" className="gap-2 data-[state=active]:bg-muted">
-                  <Code className="w-4 h-4 text-primary" />
-                  Attack
+                <TabsTrigger value="attack" className="data-[state=active]:bg-red-500/20 data-[state=active]:text-red-400 border border-transparent data-[state=active]:border-red-500/20">
+                  <Code className="w-4 h-4 mr-2" />
+                  Exploit
                 </TabsTrigger>
-                <TabsTrigger value="fixed" className="gap-2 data-[state=active]:bg-muted">
-                  <Shield className="w-4 h-4 text-green-500" />
-                  Fixed
+                <TabsTrigger value="fixed" className="data-[state=active]:bg-green-500/20 data-[state=active]:text-green-400 border border-transparent data-[state=active]:border-green-500/20">
+                  <Shield className="w-4 h-4 mr-2" />
+                  Patched
                 </TabsTrigger>
               </TabsList>
             </div>
 
             <div className="flex-1 relative">
-              <TabsContent value="vulnerable" className="absolute inset-0 m-0">
+              <div className="absolute inset-0">
                 <CodeEditor
                   code={code}
                   language="solidity"
-                  isDarkMode={theme === 'dark' || theme === 'cyberpunk' || theme === 'enterprise'}
-                  readOnly={false}
+                  isDarkMode={true}
+                  readOnly={activeTab === 'attack'}
                   onChange={setCode}
                 />
-              </TabsContent>
-              <TabsContent value="attack" className="absolute inset-0 m-0">
-                <CodeEditor
-                  code={code}
-                  language="solidity"
-                  isDarkMode={theme === 'dark' || theme === 'cyberpunk' || theme === 'enterprise'}
-                  readOnly={true}
-                />
-              </TabsContent>
-              <TabsContent value="fixed" className="absolute inset-0 m-0">
-                <CodeEditor
-                  code={code}
-                  language="solidity"
-                  isDarkMode={theme === 'dark' || theme === 'cyberpunk' || theme === 'enterprise'}
-                  readOnly={false}
-                  onChange={setCode}
-                />
-              </TabsContent>
+              </div>
             </div>
           </Tabs>
 
           {/* Action Buttons */}
-          <div className="border-t border-border bg-card p-4">
+          <div className="p-4 border-t border-white/5 bg-black/20 backdrop-blur-md">
             <ActionButtons
               selectedModule={selectedModule}
               activeTab={activeTab}
-              isDarkMode={theme === 'dark' || theme === 'cyberpunk'} // Passed for legacy support if needed
-              onToggleDarkMode={() => { }} // No-op, handled by ThemeSelector
+              isDarkMode={true}
+              onToggleDarkMode={() => { }}
               onCompile={handleCompile}
               onDeploy={handleDeploy}
               onExploit={handleExploit}
@@ -298,12 +310,12 @@ export default function SecurityPlayground() {
         </div>
 
         {/* Right Panel - Console */}
-        <div className="col-span-12 md:col-span-3 border-l border-border bg-card flex flex-col">
-          <div className="p-3 border-b border-border font-mono text-sm font-bold flex items-center gap-2">
-            <Terminal className="w-4 h-4" />
-            VM Console
+        <div className="col-span-12 md:col-span-3 border-l border-white/5 bg-black/40 flex flex-col">
+          <div className="p-3 border-b border-white/5 font-mono text-xs font-bold flex items-center gap-2 text-muted-foreground bg-black/20">
+            <Terminal className="w-3 h-3" />
+            TERMINAL_OUTPUT
           </div>
-          <div className="flex-1 overflow-hidden">
+          <div className="flex-1 overflow-hidden p-2">
             <VMConsole logs={logs} isRunning={isRunning} />
           </div>
         </div>

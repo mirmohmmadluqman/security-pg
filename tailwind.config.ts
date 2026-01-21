@@ -50,13 +50,29 @@ const config: Config = {
   				'3': 'hsl(var(--chart-3))',
   				'4': 'hsl(var(--chart-4))',
   				'5': 'hsl(var(--chart-5))'
-  			}
+  			},
+			"neon-blue": "#06b6d4",
+			"neon-purple": "#8b5cf6",
   		},
   		borderRadius: {
   			lg: 'var(--radius)',
   			md: 'calc(var(--radius) - 2px)',
   			sm: 'calc(var(--radius) - 4px)'
-  		}
+  		},
+		animation: {
+			float: "float 6s ease-in-out infinite",
+			glow: "glow 2s ease-in-out infinite alternate",
+		},
+		keyframes: {
+			float: {
+				"0%, 100%": { transform: "translateY(0)" },
+				"50%": { transform: "translateY(-10px)" },
+			},
+			glow: {
+				"from": { boxShadow: "0 0 10px var(--primary)" },
+				"to": { boxShadow: "0 0 20px var(--accent)" },
+			}
+		}
   	}
   },
   plugins: [tailwindcssAnimate],
