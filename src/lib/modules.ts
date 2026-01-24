@@ -1105,10 +1105,10 @@ contract FixedManager {
         // ... logic ...
     }
 }`,
-        explanation: 'The Poly Network exploit was made possible by a rare "Method ID Collision" combined with excessive privileges. The attacker crafted a function name that, when hashed, produced the exact same 4-byte selector as the function used to change the network keepers. The CrossChainManager blindly executed this call against the critical CrossChainData contract.',
-        vulnerability: 'The `_executeCrossChainTx` function dynamically computed function selectors from user input and executed calls against any target, including the privileged Data contract.',
-        impact: 'The attacker overwrote the consensus public keys (keepers), taking full control of the bridge and draining over $610 million in assets.',
-        prevention: 'Never allow users to specify arbitrary contract calls to critical infrastructure. Use strict whitelisting and avoid dynamic selector generation for privileged operations.',
+        explanation: 'The vulnerability leveraged a 4-byte selector collision in the `EthCrossChainManager` contract. The attacker crafted a specific function signature "f1121318093(bytes,bytes,uint64)" which produces the same 4-byte Keccak-256 hash (0x41973cd9) as the target function `putCurEpochConPubKeyBytes(bytes)`. Because the EVM only checks the first 4 bytes to identify which function to call, and because `EthCrossChainManager` was the owner of the critical Data contract, the attacker was able to successfully call the restricted function and overwrite the network keepers with their own public key.',
+        vulnerability: 'Dynamic function selector construction from user-supplied strings lacking proper whitelisting, combined with a "Privileged Executor" pattern where a logic contract held ownership rights over storage.',
+        impact: 'Complete compromise of the bridge consensus mechanism. The attacker replaced the rightful Keepers with their own key, allowing them to sign and execute arbitrary transactions across the bridge, draining over $610M.',
+        prevention: '1. Use `interface` calls instead of raw `call()`. 2. Never construct function selectors dynamically from user input. 3. Implement strict whitelisting for cross-contract calls. 4. Separate "Executor" logic from "Owner" privileges.',
         references: [
             'https://www.certik.com/resources/blog/poly-network-exploit',
             'https://research.kudelskisecurity.com/2021/08/12/the-poly-network-hack-explained/',

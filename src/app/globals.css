@@ -100,6 +100,15 @@
     color: transparent;
     background-image: linear-gradient(to right, #22d3ee, #9333ea);
   }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
 }
 
 /* Animations */

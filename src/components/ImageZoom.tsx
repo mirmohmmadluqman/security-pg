@@ -67,6 +67,15 @@ export function ImageZoomProvider({ children }: { children: React.ReactNode }) {
     useEffect(() => {
         if (isOpen) {
             document.body.style.overflow = 'hidden'
+            // Prevent default scroll behavior on wheel when zoom modal is open
+            const preventDefault = (e: WheelEvent) => {
+                if (isOpen) e.preventDefault()
+            }
+            window.addEventListener('wheel', preventDefault, { passive: false })
+            return () => {
+                window.removeEventListener('wheel', preventDefault)
+                document.body.style.overflow = 'unset'
+            }
         } else {
             document.body.style.overflow = 'unset'
         }
