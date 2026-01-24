@@ -21,7 +21,7 @@ export function Logo({ className = "" }: { className?: string }) {
             </div>
 
             <span className="text-2xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-purple-500 hidden sm:block">
-                SecPlayground
+                SecurityPlayground
             </span>
         </div>
     )

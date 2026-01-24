@@ -63,14 +63,23 @@ export function ImageZoomProvider({ children }: { children: React.ReactNode }) {
         setIsDragging(false)
     }
 
-    // Escape key to close
+    // Lock body scroll and handle escape
     useEffect(() => {
+        if (isOpen) {
+            document.body.style.overflow = 'hidden'
+        } else {
+            document.body.style.overflow = 'unset'
+        }
+
         const handleKeyDown = (e: KeyboardEvent) => {
             if (e.key === 'Escape') closeImage()
         }
         window.addEventListener('keydown', handleKeyDown)
-        return () => window.removeEventListener('keydown', handleKeyDown)
-    }, [closeImage])
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown)
+            document.body.style.overflow = 'unset'
+        }
+    }, [isOpen, closeImage])
 
     return (
         <ImageZoomContext.Provider value={{ openImage }}>
@@ -81,8 +90,9 @@ export function ImageZoomProvider({ children }: { children: React.ReactNode }) {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className="fixed inset-0 z-[9999] flex items-center justify-center bg-background/80 backdrop-blur-xl transition-all duration-300"
+                        className="fixed inset-0 z-[9999] flex items-center justify-center bg-background/95 backdrop-blur-xl transition-all duration-300"
                         onClick={closeImage}
+                        onWheel={(e) => e.stopPropagation()}
                     >
                         <div
                             className="relative w-full h-full flex items-center justify-center overflow-hidden"
