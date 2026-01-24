@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { SecurityModule } from '@/lib/types'
 import { modules } from '@/lib/modules'
 import { CodeEditor } from '@/components/CodeEditor'
@@ -8,12 +8,36 @@ import { InfoPanel } from '@/components/InfoPanel'
 import { ActionButtons } from '@/components/ActionButtons'
 import { VMConsole } from '@/components/VMConsole'
 import { Button } from '@/components/ui/button'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { ArrowLeft, Code, Bug, Shield, Terminal } from 'lucide-react'
-import { ThemeSelector } from '@/components/ThemeSelector'
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import {
+    ArrowLeft,
+    Code,
+    Bug,
+    Shield,
+    Terminal,
+    Settings,
+    Sidebar,
+    PanelRight,
+    Palette,
+    Monitor,
+    Layout
+} from 'lucide-react'
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+    DropdownMenuSub,
+    DropdownMenuSubTrigger,
+    DropdownMenuSubContent,
+} from "@/components/ui/dropdown-menu"
 import { useTheme } from 'next-themes'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
+import { Panel, PanelGroup, PanelResizeHandle, ImperativePanelHandle } from 'react-resizable-panels'
+import { cn } from '@/lib/utils'
 
 export type IDEStatus = 'idle' | 'compiling' | 'deploying' | 'executing' | 'success' | 'error'
 
@@ -24,8 +48,18 @@ export default function ChallengeClient({ challengeId }: { challengeId: string }
     const [isDeployed, setIsDeployed] = useState(false)
     const [code, setCode] = useState('')
     const [logs, setLogs] = useState<string[]>([])
-    const { theme } = useTheme()
+    const { setTheme } = useTheme()
     const [mounted, setMounted] = useState(false)
+
+    // Panel Refs for Layout Control
+    const leftPanelRef = useRef<ImperativePanelHandle>(null)
+    const rightPanelRef = useRef<ImperativePanelHandle>(null)
+    const bottomPanelRef = useRef<ImperativePanelHandle>(null)
+
+    const [leftBlocked, setLeftBlocked] = useState(false)
+    const [rightBlocked, setRightBlocked] = useState(false)
+    const [bottomBlocked, setBottomBlocked] = useState(false)
+    const [showTopBar, setShowTopBar] = useState(true)
 
     // Find the current module
     const selectedModule = modules.find(m => m.id === challengeId)
@@ -33,6 +67,35 @@ export default function ChallengeClient({ challengeId }: { challengeId: string }
     useEffect(() => {
         setMounted(true)
     }, [])
+
+    // Keyboard Shortcuts
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.ctrlKey || e.metaKey) {
+                switch (e.key) {
+                    case '1':
+                        e.preventDefault()
+                        toggleLeftPanel()
+                        break
+                    case '2':
+                        e.preventDefault()
+                        setShowTopBar(prev => !prev)
+                        break
+                    case '3':
+                        e.preventDefault()
+                        toggleBottomPanel()
+                        break
+                    case '`':
+                        e.preventDefault()
+                        toggleRightPanel()
+                        break
+                }
+            }
+        }
+
+        window.addEventListener('keydown', handleKeyDown)
+        return () => window.removeEventListener('keydown', handleKeyDown)
+    }, [leftBlocked, rightBlocked, bottomBlocked, showTopBar])
 
     useEffect(() => {
         if (selectedModule) {
@@ -180,111 +243,308 @@ export default function ChallengeClient({ challengeId }: { challengeId: string }
         setLogs([...logs, '💾 Local progress saved!'])
     }
 
+    // Layout Toggles
+    const toggleLeftPanel = () => {
+        const panel = leftPanelRef.current
+        if (panel) {
+            if (leftBlocked) panel.expand()
+            else panel.collapse()
+        }
+    }
+
+    const toggleRightPanel = () => {
+        const panel = rightPanelRef.current
+        if (panel) {
+            if (rightBlocked) panel.expand()
+            else panel.collapse()
+        }
+    }
+
+    const toggleBottomPanel = () => {
+        const panel = bottomPanelRef.current
+        if (panel) {
+            if (bottomBlocked) panel.expand()
+            else panel.collapse()
+        }
+    }
+
     return (
-        <div className="h-screen bg-background flex flex-col relative overflow-hidden">
+        <div className="h-screen bg-background flex flex-col relative overflow-hidden text-foreground">
             {/* Background noise/gradient for IDE */}
-            <div className="absolute inset-0 pointer-events-none opacity-20">
+            <div className="absolute inset-0 pointer-events-none opacity-20 z-0">
                 <div className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] bg-primary/30 blur-[100px] rounded-full" />
             </div>
 
+            {/* Floating Settings Button (Only visible if Header is hidden) */}
+            {!showTopBar && (
+                <div className="absolute top-4 right-4 z-[100] animate-in fade-in zoom-in duration-300">
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="outline" size="icon" className="h-10 w-10 bg-black/50 backdrop-blur-md border-primary/20 hover:border-primary transition-all rounded-full">
+                                <Settings className="w-5 h-5 text-primary" />
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-64 bg-[#0a0a0a] border-white/10 text-slate-300">
+                            <DropdownMenuLabel>Workshop Settings</DropdownMenuLabel>
+                            <DropdownMenuSeparator className="bg-white/10" />
+                            <DropdownMenuItem onClick={() => setShowTopBar(true)}>
+                                <Layout className="w-4 h-4 mr-2" />
+                                <span>Show Top Bar</span>
+                                <span className="ml-auto text-[10px] opacity-50">Ctrl+2</span>
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator className="bg-white/10" />
+                            <DropdownMenuSub>
+                                <DropdownMenuSubTrigger>
+                                    <Palette className="w-4 h-4 mr-2" />
+                                    <span>Theme</span>
+                                </DropdownMenuSubTrigger>
+                                <DropdownMenuSubContent className="bg-[#0a0a0a] border-white/10">
+                                    {["dark", "light", "cyberpunk", "minimalist"].map((t) => (
+                                        <DropdownMenuItem key={t} onClick={() => setTheme(t)}>{t}</DropdownMenuItem>
+                                    ))}
+                                </DropdownMenuSubContent>
+                            </DropdownMenuSub>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                </div>
+            )}
+
             {/* Header */}
-            <header className="h-16 glass border-b border-white/5 flex items-center justify-between px-6 sticky top-0 z-50 shrink-0">
-                <div className="flex items-center gap-4">
-                    <Link href="/challenges">
+            {showTopBar && (
+                <header className="h-14 glass border-b border-white/5 flex items-center justify-between px-4 sticky top-0 z-50 shrink-0 select-none animate-in slide-in-from-top duration-300">
+                    <div className="flex items-center gap-4">
+                        <Link href="/challenges">
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                className="gap-2 h-9 px-3 hover:bg-white/5 text-muted-foreground hover:text-foreground transition-colors"
+                            >
+                                <ArrowLeft className="w-4 h-4" />
+                                <span className="hidden md:inline">Back</span>
+                            </Button>
+                        </Link>
+                        <div className="h-6 w-px bg-white/10 hidden md:block" />
+                        <h1 className="text-sm md:text-base font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-white/60 truncate max-w-[200px] md:max-w-md">
+                            {selectedModule.title}
+                        </h1>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                        {/* View Controls */}
                         <Button
                             variant="ghost"
-                            size="sm"
-                            className="gap-2 hover:bg-white/5 text-muted-foreground hover:text-foreground transition-colors"
+                            size="icon"
+                            className={cn("h-8 w-8 text-muted-foreground hover:text-white hidden md:flex", leftBlocked && "text-primary bg-primary/10")}
+                            onClick={toggleLeftPanel}
+                            title="Toggle Sidebar (Ctrl+1)"
                         >
-                            <ArrowLeft className="w-4 h-4" />
-                            Back
+                            <Sidebar className="w-4 h-4" />
                         </Button>
-                    </Link>
-                    <div className="h-6 w-px bg-white/10" />
-                    <h1 className="text-lg font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-white/60">
-                        {selectedModule.title}
-                    </h1>
-                </div>
-                <div className="flex items-center gap-4">
-                    <div className="px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-xs font-mono text-primary flex items-center gap-2">
-                        <span className="relative flex h-2 w-2">
-                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-                            <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
-                        </span>
-                        EVM Connected
-                    </div>
-                    <ThemeSelector />
-                </div>
-            </header>
 
-            {/* Main Content */}
-            <div className="flex-1 grid grid-cols-12 overflow-hidden">
-                {/* Left Panel - Info */}
-                <div className="col-span-12 md:col-span-3 border-r border-white/5 bg-card/30 backdrop-blur-sm overflow-y-auto custom-scrollbar min-h-0">
-                    <InfoPanel module={selectedModule} />
-                </div>
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            className={cn("h-8 w-8 text-muted-foreground hover:text-white hidden md:flex", rightBlocked && "text-primary bg-primary/10")}
+                            onClick={toggleRightPanel}
+                            title="Toggle Terminal (Ctrl+`)"
+                        >
+                            <PanelRight className="w-4 h-4" />
+                        </Button>
 
-                {/* Middle Panel - Code Editor */}
-                <div className="col-span-12 md:col-span-6 flex flex-col bg-background/50 min-h-0">
-                    <Tabs value={activeTab} onValueChange={handleTabChange} className="flex-1 flex flex-col overflow-hidden">
-                        <div className="border-b border-white/5 bg-black/20 px-4 shrink-0">
-                            <TabsList className="bg-transparent w-full justify-start h-12 gap-2">
-                                <TabsTrigger value="vulnerable" className="data-[state=active]:bg-primary/20 data-[state=active]:text-primary border border-transparent data-[state=active]:border-primary/20">
-                                    <Bug className="w-4 h-4 mr-2" />
-                                    Vulnerability
-                                </TabsTrigger>
-                                <TabsTrigger value="attack" className="data-[state=active]:bg-red-500/20 data-[state=active]:text-red-400 border border-transparent data-[state=active]:border-red-500/20">
-                                    <Code className="w-4 h-4 mr-2" />
-                                    Exploit
-                                </TabsTrigger>
-                                <TabsTrigger value="fixed" className="data-[state=active]:bg-green-500/20 data-[state=active]:text-green-400 border border-transparent data-[state=active]:border-green-500/20">
-                                    <Shield className="w-4 h-4 mr-2" />
-                                    Patched
-                                </TabsTrigger>
-                            </TabsList>
+                        <div className="h-6 w-px bg-white/10 mx-2" />
+
+                        <div className="hidden md:flex px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-[10px] font-mono text-primary items-center gap-2">
+                            <span className="relative flex h-1.5 w-1.5">
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-primary"></span>
+                            </span>
+                            EVM Ready
                         </div>
 
-                        <div className="flex-1 min-h-0 relative">
-                            <div className="absolute inset-0">
-                                <CodeEditor
-                                    code={code}
-                                    language="solidity"
-                                    isDarkMode={true}
-                                    readOnly={activeTab === 'attack'}
-                                    onChange={setCode}
-                                />
+                        {/* Settings Menu */}
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-white">
+                                    <Settings className="w-4 h-4 transition-transform hover:rotate-45 duration-500" />
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end" className="w-64 bg-[#0a0a0a] border-white/10 text-slate-300">
+                                <DropdownMenuLabel>Workshop Settings</DropdownMenuLabel>
+                                <DropdownMenuSeparator className="bg-white/10" />
+
+                                <DropdownMenuSub>
+                                    <DropdownMenuSubTrigger>
+                                        <Palette className="w-4 h-4 mr-2" />
+                                        <span>Theme</span>
+                                    </DropdownMenuSubTrigger>
+                                    <DropdownMenuSubContent className="bg-[#0a0a0a] border-white/10">
+                                        {[
+                                            { name: "dark", label: "Dark" },
+                                            { name: "light", label: "Light" },
+                                            { name: "cyberpunk", label: "Cyberpunk" },
+                                            { name: "minimalist", label: "Minimalist" },
+                                        ].map((t) => (
+                                            <DropdownMenuItem key={t.name} onClick={() => setTheme(t.name)}>
+                                                {t.label}
+                                            </DropdownMenuItem>
+                                        ))}
+                                    </DropdownMenuSubContent>
+                                </DropdownMenuSub>
+
+                                <DropdownMenuSub>
+                                    <DropdownMenuSubTrigger>
+                                        <Layout className="w-4 h-4 mr-2" />
+                                        <span>View</span>
+                                    </DropdownMenuSubTrigger>
+                                    <DropdownMenuSubContent className="bg-[#0a0a0a] border-white/10">
+                                        <DropdownMenuItem onClick={toggleLeftPanel}>
+                                            <Sidebar className="w-4 h-4 mr-2" />
+                                            <span>Toggle Sidebar</span>
+                                            <span className="ml-auto text-[10px] opacity-50">Ctrl+1</span>
+                                        </DropdownMenuItem>
+                                        <DropdownMenuItem onClick={() => setShowTopBar(false)}>
+                                            <Layout className="w-4 h-4 mr-2" />
+                                            <span>Toggle Top Bar</span>
+                                            <span className="ml-auto text-[10px] opacity-50">Ctrl+2</span>
+                                        </DropdownMenuItem>
+                                        <DropdownMenuItem onClick={toggleBottomPanel}>
+                                            <Monitor className="w-4 h-4 mr-2" />
+                                            <span>Toggle Bottom Bar</span>
+                                            <span className="ml-auto text-[10px] opacity-50">Ctrl+3</span>
+                                        </DropdownMenuItem>
+                                        <DropdownMenuItem onClick={toggleRightPanel}>
+                                            <PanelRight className="w-4 h-4 mr-2" />
+                                            <span>Toggle Terminal</span>
+                                            <span className="ml-auto text-[10px] opacity-50">Ctrl+`</span>
+                                        </DropdownMenuItem>
+                                    </DropdownMenuSubContent>
+                                </DropdownMenuSub>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    </div>
+                </header>
+            )}
+
+            {/* Main Content - Resizable Layout */}
+            <div className="flex-1 overflow-hidden relative z-10">
+                <PanelGroup direction="horizontal">
+                    {/* Left Panel */}
+                    <Panel
+                        ref={leftPanelRef}
+                        defaultSize={25}
+                        minSize={15}
+                        maxSize={40}
+                        collapsible
+                        onCollapse={() => setLeftBlocked(true)}
+                        onExpand={() => setLeftBlocked(false)}
+                        className={cn("bg-card/30 backdrop-blur-sm border-r border-white/5 transition-all duration-300", leftBlocked && "min-w-[0px] w-0 border-none opacity-0")}
+                    >
+                        <div className="h-full overflow-y-auto custom-scrollbar">
+                            <InfoPanel module={selectedModule} />
+                        </div>
+                    </Panel>
+
+                    <PanelResizeHandle className="w-1 bg-[#1a1a1a] hover:bg-primary/50 transition-colors cursor-col-resize active:bg-primary/80 flex flex-col justify-center items-center group">
+                        <div className="w-0.5 h-8 bg-white/20 rounded-full group-hover:bg-white/50" />
+                    </PanelResizeHandle>
+
+                    {/* Middle Panel - Code + Action Area */}
+                    <Panel minSize={30}>
+                        <PanelGroup direction="vertical">
+                            <Panel minSize={30}>
+                                <div className="h-full flex flex-col bg-background/50">
+                                    <Tabs value={activeTab} onValueChange={handleTabChange} className="flex-1 flex flex-col overflow-hidden">
+                                        <div className="border-b border-white/5 bg-black/20 px-4 shrink-0 flex items-center justify-between">
+                                            <TabsList className="bg-transparent justify-start h-12 gap-2">
+                                                <TabsTrigger value="vulnerable" className="data-[state=active]:bg-primary/20 data-[state=active]:text-primary border border-transparent data-[state=active]:border-primary/20 text-xs md:text-sm">
+                                                    <Bug className="w-3.5 h-3.5 mr-2" />
+                                                    Vulnerability
+                                                </TabsTrigger>
+                                                <TabsTrigger value="attack" className="data-[state=active]:bg-red-500/20 data-[state=active]:text-red-400 border border-transparent data-[state=active]:border-red-500/20 text-xs md:text-sm">
+                                                    <Code className="w-3.5 h-3.5 mr-2" />
+                                                    Exploit
+                                                </TabsTrigger>
+                                                <TabsTrigger value="fixed" className="data-[state=active]:bg-green-500/20 data-[state=active]:text-green-400 border border-transparent data-[state=active]:border-green-500/20 text-xs md:text-sm">
+                                                    <Shield className="w-3.5 h-3.5 mr-2" />
+                                                    Patched
+                                                </TabsTrigger>
+                                            </TabsList>
+                                        </div>
+
+                                        <div className="flex-1 min-h-0 relative">
+                                            <div className="absolute inset-0">
+                                                <CodeEditor
+                                                    code={code}
+                                                    language="solidity"
+                                                    isDarkMode={true}
+                                                    readOnly={activeTab === 'attack'}
+                                                    onChange={setCode}
+                                                    className="h-full w-full"
+                                                />
+                                            </div>
+                                        </div>
+                                    </Tabs>
+                                </div>
+                            </Panel>
+
+                            <PanelResizeHandle className={cn("h-1 bg-[#1a1a1a] hover:bg-primary/50 transition-colors cursor-row-resize active:bg-primary/80 flex justify-center items-center group", bottomBlocked && "hidden")}>
+                                <div className="h-0.5 w-8 bg-white/20 rounded-full group-hover:bg-white/50" />
+                            </PanelResizeHandle>
+
+                            {/* Action Buttons (Bottom adjustable panel) */}
+                            <Panel
+                                ref={bottomPanelRef}
+                                defaultSize={15}
+                                minSize={10}
+                                collapsible
+                                onCollapse={() => setBottomBlocked(true)}
+                                onExpand={() => setBottomBlocked(false)}
+                                className={cn("border-t border-white/5 bg-black/20 backdrop-blur-md z-20 transition-all duration-300", bottomBlocked && "h-0 opacity-0 overflow-hidden border-none")}
+                            >
+                                <div className="p-4 h-full">
+                                    <ActionButtons
+                                        selectedModule={selectedModule}
+                                        activeTab={activeTab}
+                                        isDarkMode={true}
+                                        onToggleDarkMode={() => { }}
+                                        onCompile={handleCompile}
+                                        onDeploy={handleDeploy}
+                                        onExploit={handleExploit}
+                                        onReset={handleReset}
+                                        onSave={handleSave}
+                                        isRunning={status === 'compiling' || status === 'deploying' || status === 'executing'}
+                                        status={status}
+                                    />
+                                </div>
+                            </Panel>
+                        </PanelGroup>
+                    </Panel>
+
+                    <PanelResizeHandle className="w-1 bg-[#1a1a1a] hover:bg-primary/50 transition-colors cursor-col-resize active:bg-primary/80 flex flex-col justify-center items-center group">
+                        <div className="w-0.5 h-8 bg-white/20 rounded-full group-hover:bg-white/50" />
+                    </PanelResizeHandle>
+
+                    {/* Right Panel - Terminal */}
+                    <Panel
+                        ref={rightPanelRef}
+                        defaultSize={25}
+                        minSize={15}
+                        collapsible
+                        onCollapse={() => setRightBlocked(true)}
+                        onExpand={() => setRightBlocked(false)}
+                        className={cn("bg-black/40 border-l border-white/5 transition-all duration-300", rightBlocked && "min-w-[0px] w-0 border-none opacity-0")}
+                    >
+                        <div className="h-full flex flex-col min-h-0">
+                            <div className="p-3 border-b border-white/5 font-mono text-xs font-bold flex items-center gap-2 text-muted-foreground bg-black/20 shrink-0">
+                                <Terminal className="w-3 h-3" />
+                                TERMINAL_OUTPUT
+                            </div>
+                            <div className="flex-1 min-h-0 p-2 overflow-hidden">
+                                <VMConsole logs={logs} isRunning={status === 'executing'} />
                             </div>
                         </div>
-                    </Tabs>
-
-                    {/* Action Buttons */}
-                    <div className="p-4 border-t border-white/5 bg-black/20 backdrop-blur-md shrink-0">
-                        <ActionButtons
-                            selectedModule={selectedModule}
-                            activeTab={activeTab}
-                            isDarkMode={true}
-                            onToggleDarkMode={() => { }}
-                            onCompile={handleCompile}
-                            onDeploy={handleDeploy}
-                            onExploit={handleExploit}
-                            onReset={handleReset}
-                            onSave={handleSave}
-                            isRunning={status === 'compiling' || status === 'deploying' || status === 'executing'}
-                            status={status}
-                        />
-                    </div>
-                </div>
-
-                {/* Right Panel - Console */}
-                <div className="col-span-12 md:col-span-3 border-l border-white/5 bg-black/40 flex flex-col min-h-0">
-                    <div className="p-3 border-b border-white/5 font-mono text-xs font-bold flex items-center gap-2 text-muted-foreground bg-black/20 shrink-0">
-                        <Terminal className="w-3 h-3" />
-                        TERMINAL_OUTPUT
-                    </div>
-                    <div className="flex-1 min-h-0 p-2 overflow-hidden">
-                        <VMConsole logs={logs} isRunning={status === 'executing'} />
-                    </div>
-                </div>
+                    </Panel>
+                </PanelGroup>
             </div>
         </div>
     )

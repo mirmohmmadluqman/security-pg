@@ -41,54 +41,39 @@ export function InfoPanel({ module }: InfoPanelProps) {
       </div>
 
       <div className="relative group">
-        <button
-          onClick={() => {
-            const el = document.getElementById('info-tabs-list');
-            el?.scrollBy({ left: -100, behavior: 'smooth' });
-          }}
-          className="absolute left-0 top-1/2 -translate-y-1/2 z-10 p-1 bg-background/80 backdrop-blur-sm border border-white/10 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-        >
-          <ChevronLeft size={14} />
-        </button>
-
         <Tabs defaultValue="vulnerability" className="w-full">
           <TabsList
             id="info-tabs-list"
-            className="w-full flex h-auto bg-black/20 p-1 rounded-lg border border-white/5 overflow-x-auto no-scrollbar justify-start relative px-6"
+            className="w-full flex h-auto bg-black/20 p-1 rounded-lg border border-white/5 overflow-x-auto no-scrollbar justify-start relative px-6 snap-x"
           >
-            <TabsTrigger value="vulnerability" className="flex-1 min-w-fit text-xs py-2 data-[state=active]:bg-primary/20 data-[state=active]:text-primary whitespace-nowrap px-4">
+            <TabsTrigger value="vulnerability" className="flex-1 min-w-fit text-xs py-2 data-[state=active]:bg-primary/20 data-[state=active]:text-primary whitespace-nowrap px-4 snap-center"
+              onClick={(e) => e.currentTarget.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' })}>
               <AlertTriangle className="w-3.5 h-3.5 mr-1.5" />
               Bug
             </TabsTrigger>
-            <TabsTrigger value="impact" className="flex-1 min-w-fit text-xs py-2 data-[state=active]:bg-red-500/20 data-[state=active]:text-red-400 whitespace-nowrap px-4">
+            <TabsTrigger value="impact" className="flex-1 min-w-fit text-xs py-2 data-[state=active]:bg-red-500/20 data-[state=active]:text-red-400 whitespace-nowrap px-4 snap-center"
+              onClick={(e) => e.currentTarget.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' })}>
               <Zap className="w-3.5 h-3.5 mr-1.5" />
               Impact
             </TabsTrigger>
-            <TabsTrigger value="prevention" className="flex-1 min-w-fit text-xs py-2 data-[state=active]:bg-green-500/20 data-[state=active]:text-green-400 whitespace-nowrap px-4">
+            <TabsTrigger value="prevention" className="flex-1 min-w-fit text-xs py-2 data-[state=active]:bg-green-500/20 data-[state=active]:text-green-400 whitespace-nowrap px-4 snap-center"
+              onClick={(e) => e.currentTarget.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' })}>
               <Shield className="w-3.5 h-3.5 mr-1.5" />
               fix
             </TabsTrigger>
             {module.images && module.images.length > 0 && (
-              <TabsTrigger value="evidence" className="flex-1 min-w-fit text-xs py-2 data-[state=active]:bg-purple-500/20 data-[state=active]:text-purple-400 whitespace-nowrap px-4">
+              <TabsTrigger value="evidence" className="flex-1 min-w-fit text-xs py-2 data-[state=active]:bg-purple-500/20 data-[state=active]:text-purple-400 whitespace-nowrap px-4 snap-center"
+                onClick={(e) => e.currentTarget.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' })}>
                 <ImageIcon className="w-3.5 h-3.5 mr-1.5" />
                 Evidence
               </TabsTrigger>
             )}
-            <TabsTrigger value="references" className="flex-1 min-w-fit text-xs py-2 data-[state=active]:bg-blue-500/20 data-[state=active]:text-blue-400 whitespace-nowrap px-4">
+            <TabsTrigger value="references" className="flex-1 min-w-fit text-xs py-2 data-[state=active]:bg-blue-500/20 data-[state=active]:text-blue-400 whitespace-nowrap px-4 snap-center"
+              onClick={(e) => e.currentTarget.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' })}>
               <BookOpen className="w-3.5 h-3.5 mr-1.5" />
               Learn
             </TabsTrigger>
           </TabsList>
-
-          <button
-            onClick={() => {
-              const el = document.getElementById('info-tabs-list');
-              el?.scrollBy({ left: 100, behavior: 'smooth' });
-            }}
-            className="absolute right-0 top-1/2 -translate-y-1/2 z-10 p-1 bg-background/80 backdrop-blur-sm border border-white/10 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-          >
-            <ChevronRight size={14} />
-          </button>
 
           <div className="mt-4">
             <TabsContent value="vulnerability" className="space-y-4 m-0">
