@@ -47,4 +47,7 @@ test
 prompt
 
 server.log
+
+# Data/Docs only needed to make it
 /exploits
+/Integrations_
