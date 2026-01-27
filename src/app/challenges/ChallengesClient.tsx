@@ -20,7 +20,7 @@ export default function ChallengesClient() {
                 <header className="flex justify-between items-center mb-12">
                     <div className="flex items-center gap-4">
                         <Link href="/">
-                            <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-white">
+                            <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground">
                                 <ArrowLeft className="h-5 w-5" />
                             </Button>
                         </Link>

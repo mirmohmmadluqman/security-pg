@@ -14,19 +14,19 @@ interface InfoPanelProps {
 
 export function InfoPanel({ module }: InfoPanelProps) {
   return (
-    <div className="p-6 space-y-6 text-slate-300">
+    <div className="p-6 space-y-6 text-foreground">
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="p-2 bg-primary/10 rounded-lg text-primary">
               <Target className="w-5 h-5" />
             </div>
-            <h3 className="font-bold text-lg text-white tracking-wide">
+            <h3 className="font-bold text-lg text-foreground tracking-wide">
               {module.title}
             </h3>
           </div>
           <Badge variant="outline" className={cn(
-            "capitalize border-white/10",
+            "capitalize border-border",
             module.difficulty === 'beginner' && "text-green-400 bg-green-400/10",
             module.difficulty === 'intermediate' && "text-yellow-400 bg-yellow-400/10",
             module.difficulty === 'advanced' && "text-red-400 bg-red-400/10"
@@ -35,7 +35,7 @@ export function InfoPanel({ module }: InfoPanelProps) {
           </Badge>
         </div>
 
-        <p className="text-sm text-slate-400 leading-relaxed border-l-2 border-primary/30 pl-4 whitespace-pre-wrap">
+        <p className="text-sm text-muted-foreground leading-relaxed border-l-2 border-primary/30 pl-4 whitespace-pre-wrap">
           {module.description}
         </p>
       </div>
@@ -44,7 +44,7 @@ export function InfoPanel({ module }: InfoPanelProps) {
         <Tabs defaultValue="vulnerability" className="w-full">
           <TabsList
             id="info-tabs-list"
-            className="w-full flex h-auto bg-black/20 p-1 rounded-lg border border-white/5 overflow-x-auto no-scrollbar justify-start relative px-6 snap-x"
+            className="w-full flex h-auto bg-accent/20 p-1 rounded-lg border border-border overflow-x-auto no-scrollbar justify-start relative px-6 snap-x"
           >
             <TabsTrigger value="vulnerability" className="flex-1 min-w-fit text-xs py-2 data-[state=active]:bg-primary/20 data-[state=active]:text-primary whitespace-nowrap px-4 snap-center"
               onClick={(e) => e.currentTarget.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' })}>
@@ -85,7 +85,7 @@ export function InfoPanel({ module }: InfoPanelProps) {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-sm leading-relaxed text-slate-300 whitespace-pre-wrap">
+                  <p className="text-sm leading-relaxed text-muted-foreground whitespace-pre-wrap">
                     {module.vulnerability}
                   </p>
                 </CardContent>
@@ -99,7 +99,7 @@ export function InfoPanel({ module }: InfoPanelProps) {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-sm leading-relaxed text-slate-300 whitespace-pre-wrap">
+                  <p className="text-sm leading-relaxed text-muted-foreground whitespace-pre-wrap">
                     {module.explanation}
                   </p>
                 </CardContent>
@@ -115,7 +115,7 @@ export function InfoPanel({ module }: InfoPanelProps) {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-sm leading-relaxed text-slate-300 whitespace-pre-wrap">
+                  <p className="text-sm leading-relaxed text-muted-foreground whitespace-pre-wrap">
                     {module.impact}
                   </p>
                 </CardContent>
@@ -131,7 +131,7 @@ export function InfoPanel({ module }: InfoPanelProps) {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-sm leading-relaxed text-slate-300 whitespace-pre-wrap">
+                  <p className="text-sm leading-relaxed text-muted-foreground whitespace-pre-wrap">
                     {module.prevention}
                   </p>
                 </CardContent>
@@ -154,7 +154,7 @@ export function InfoPanel({ module }: InfoPanelProps) {
                           key={index}
                           src={img}
                           alt={`Evidence ${index + 1}`}
-                          className="w-full h-48 rounded-xl border border-white/5 overflow-hidden shadow-lg bg-white/5"
+                          className="w-full h-48 rounded-xl border border-border overflow-hidden shadow-lg bg-accent/5"
                         />
                       ))}
                     </div>
@@ -178,7 +178,7 @@ export function InfoPanel({ module }: InfoPanelProps) {
                       href={reference}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-2 text-sm text-blue-400 hover:text-blue-300 transition-colors group p-2 rounded-md hover:bg-white/5"
+                      className="flex items-center gap-2 text-sm text-blue-500 hover:text-blue-600 transition-colors group p-2 rounded-md hover:bg-accent"
                     >
                       <ExternalLink className="w-3.5 h-3.5 group-hover:scale-110 transition-transform" />
                       <span>{reference.split('/').pop()?.replace(/[-_]/g, ' ') || 'Documentation'}</span>
@@ -190,7 +190,7 @@ export function InfoPanel({ module }: InfoPanelProps) {
           </div>
         </Tabs>
 
-        <div className="pt-4 border-t border-white/10">
+        <div className="pt-4 border-t border-border">
           <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-4 flex items-center gap-2">
             <span className="w-1.5 h-1.5 rounded-full bg-primary/50" />
             Mission Objectives
@@ -203,10 +203,10 @@ export function InfoPanel({ module }: InfoPanelProps) {
               "Patch the code to prevent attack"
             ].map((step, i) => (
               <div key={i} className="flex items-start gap-3 text-sm group">
-                <div className="w-5 h-5 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-[10px] font-mono group-hover:bg-primary/20 group-hover:text-primary transition-colors">
+                <div className="w-5 h-5 rounded-full bg-accent/20 border border-border flex items-center justify-center text-[10px] font-mono group-hover:bg-primary/20 group-hover:text-primary transition-colors">
                   {i + 1}
                 </div>
-                <span className="text-slate-400 group-hover:text-slate-200 transition-colors">
+                <span className="text-muted-foreground group-hover:text-foreground transition-colors">
                   {step}
                 </span>
               </div>
