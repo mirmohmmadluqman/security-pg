@@ -28,6 +28,29 @@ export default function VulnerabilityDetailPage() {
         setTimeout(() => setCopied(false), 2000)
     }
 
+    // Helper to render text with clickable links
+    const renderContent = (text: string) => {
+        const urlRegex = /(https?:\/\/[^\s\n]+)/g;
+        const parts = text.split(urlRegex);
+
+        return parts.map((part, i) => {
+            if (part.match(urlRegex)) {
+                return (
+                    <a
+                        key={i}
+                        href={part}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-primary hover:underline break-all transition-colors"
+                    >
+                        {part}
+                    </a>
+                );
+            }
+            return part;
+        });
+    };
+
     return (
         <div className="min-h-screen bg-background relative overflow-hidden flex flex-col">
             {/* Background Effects */}
@@ -52,7 +75,7 @@ export default function VulnerabilityDetailPage() {
                 </div>
             </header>
 
-            <main className="flex-1 container mx-auto p-6 md:p-8 grid lg:grid-cols-2 gap-12 relative z-10 items-stretch">
+            <main className="flex-1 container mx-auto p-6 md:p-8 grid lg:grid-cols-2 gap-12 relative z-10 items-start">
 
                 {/* Left Column: Documentation */}
                 <div className="space-y-8 pb-12">
@@ -101,9 +124,9 @@ export default function VulnerabilityDetailPage() {
                     <div className="space-y-6">
                         <div className="glass p-6 rounded-2xl border-white/5 space-y-4">
                             <h3 className="text-xl font-bold border-b border-white/5 pb-2">Description</h3>
-                            <pre className="whitespace-pre-wrap font-sans text-muted-foreground leading-relaxed">
-                                {vulnerability.description}
-                            </pre>
+                            <div className="whitespace-pre-wrap font-sans text-muted-foreground leading-relaxed text-sm">
+                                {renderContent(vulnerability.description)}
+                            </div>
                         </div>
 
                         {/* Educational Context */}
@@ -121,54 +144,56 @@ export default function VulnerabilityDetailPage() {
 
                         <div className="glass p-6 rounded-2xl border-white/5 space-y-4 border-l-4 border-l-green-500/50">
                             <h3 className="text-xl font-bold border-b border-white/5 pb-2 text-green-400">Mitigation</h3>
-                            <pre className="whitespace-pre-wrap font-sans text-muted-foreground leading-relaxed">
-                                {vulnerability.mitigation}
-                            </pre>
+                            <div className="whitespace-pre-wrap font-sans text-muted-foreground leading-relaxed text-sm">
+                                {renderContent(vulnerability.mitigation)}
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                {/* Right Column: Code Viewer - Matches documentation height */}
-                <div className="flex flex-col h-full rounded-2xl overflow-hidden border border-white/10 bg-[#1e1e1e] shadow-2xl min-h-[500px]">
-                    <div className="flex items-center justify-between px-4 py-3 bg-[#252526] border-b border-white/5 shrink-0">
-                        <div className="flex items-center gap-2">
-                            <div className="flex gap-1.5">
-                                <div className="w-3 h-3 rounded-full bg-red-500/20" />
-                                <div className="w-3 h-3 rounded-full bg-yellow-500/20" />
-                                <div className="w-3 h-3 rounded-full bg-green-500/20" />
+                {/* Right Column: Code Viewer - Fixed Height & Internal Scroll */}
+                <div className="sticky top-28 w-full">
+                    <div className="flex flex-col rounded-2xl overflow-hidden border border-white/10 bg-[#1e1e1e] shadow-2xl h-[650px]">
+                        <div className="flex items-center justify-between px-4 py-3 bg-[#252526] border-b border-white/5 shrink-0">
+                            <div className="flex items-center gap-2">
+                                <div className="flex gap-1.5">
+                                    <div className="w-3 h-3 rounded-full bg-red-500/20" />
+                                    <div className="w-3 h-3 rounded-full bg-yellow-500/20" />
+                                    <div className="w-3 h-3 rounded-full bg-green-500/20" />
+                                </div>
+                                <span className="text-xs font-mono text-muted-foreground ml-2">
+                                    {vulnerability.slug}.sol
+                                </span>
                             </div>
-                            <span className="text-xs font-mono text-muted-foreground ml-2">
-                                {vulnerability.slug}.sol
-                            </span>
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                className="h-8 gap-2 text-xs"
+                                onClick={handleCopy}
+                            >
+                                {copied ? <Check className="w-3 h-3 text-green-400" /> : <Copy className="w-3 h-3" />}
+                                {copied ? 'Copied' : 'Copy Code'}
+                            </Button>
                         </div>
-                        <Button
-                            variant="ghost"
-                            size="sm"
-                            className="h-8 gap-2 text-xs"
-                            onClick={handleCopy}
-                        >
-                            {copied ? <Check className="w-3 h-3 text-green-400" /> : <Copy className="w-3 h-3" />}
-                            {copied ? 'Copied' : 'Copy Code'}
-                        </Button>
-                    </div>
 
-                    <div className="flex-1 overflow-auto relative custom-scrollbar">
-                        <SyntaxHighlighter
-                            language="solidity"
-                            style={vscDarkPlus}
-                            customStyle={{
-                                margin: 0,
-                                padding: '1.5rem',
-                                fontSize: '14px',
-                                lineHeight: '1.5',
-                                minHeight: '100%',
-                                backgroundColor: 'transparent'
-                            }}
-                            showLineNumbers={true}
-                            wrapLines={true}
-                        >
-                            {vulnerability.code}
-                        </SyntaxHighlighter>
+                        <div className="flex-1 overflow-auto relative custom-scrollbar">
+                            <SyntaxHighlighter
+                                language="solidity"
+                                style={vscDarkPlus}
+                                customStyle={{
+                                    margin: 0,
+                                    padding: '1.5rem',
+                                    fontSize: '14px',
+                                    lineHeight: '1.5',
+                                    height: 'auto',
+                                    backgroundColor: 'transparent'
+                                }}
+                                showLineNumbers={true}
+                                wrapLines={true}
+                            >
+                                {vulnerability.code}
+                            </SyntaxHighlighter>
+                        </div>
                     </div>
                 </div>
 

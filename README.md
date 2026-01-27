@@ -9,6 +9,8 @@
 ![Next.js](https://img.shields.io/badge/Next.js-15.3.5-black)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue)
 
+Let's make Web3 secure! Join [Discord](https://discord.gg/qMd7jwV7UG)
+
 ## Overview
 
 Security Playground teaches developers about common smart contract vulnerabilities in a safe, sandboxed environment. Learn by exploiting vulnerable contracts, understanding attack vectors, and implementing fixes.

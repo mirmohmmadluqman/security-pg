@@ -91,8 +91,8 @@ async function generateLibrary() {
                 standard,
                 source: {
                     name: 'DeFi Vuln Labs',
-                    url: `https://github.com/SunWeb3Sec/DeFi-Vuln-Labs/blob/main/src/test/${path.basename(file)}`,
-                    repo: 'https://github.com/SunWeb3Sec/DeFi-Vuln-Labs'
+                    url: `https://github.com/SunWeb3Sec/DeFiVulnLabs/blob/main/src/test/${path.basename(file)}`,
+                    repo: 'https://github.com/SunWeb3Sec/DeFiVulnLabs'
                 }
             };
 

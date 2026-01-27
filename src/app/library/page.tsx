@@ -57,7 +57,7 @@ export default function LibraryPage() {
                     <p className="text-lg text-muted-foreground max-w-2xl">
                         A curated collection of real-world smart contract vulnerabilities.
                         Strictly read-only for educational purposes.
-                        Source data provided by <a href="https://github.com/SunWeb3Sec/DeFi-Vuln-Labs" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DeFi-Vuln-Labs</a>.
+                        Source data provided by <a href="https://github.com/SunWeb3Sec/DeFiVulnLabs" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DeFiVulnLabs</a>.
                     </p>
                 </motion.div>
 
