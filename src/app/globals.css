@@ -2,32 +2,54 @@
 
 @layer base {
   :root {
-    /* Default to Dark Mode values for consistency in Web3 feel */
-    --background: 240 10% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 240 10% 3.9%;
-    --card-foreground: 0 0% 98%;
-    --popover: 240 10% 3.9%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 263.4 70% 50.4%;
+    /* Default - Dark Mode for Web3 aesthetic */
+    --background: 224 71% 4%;
+    --foreground: 210 40% 98%;
+    --card: 222 47% 11%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222 47% 11%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 263 90% 65%;
     --primary-foreground: 210 40% 98%;
-    --secondary: 240 3.7% 15.9%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 240 3.7% 15.9%;
-    --muted-foreground: 240 5% 64.9%;
-    --accent: 240 3.7% 15.9%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
-    --ring: 240 4.9% 83.9%;
+    --secondary: 217 32% 17%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217 32% 17%;
+    --muted-foreground: 215 20% 65%;
+    --accent: 180 100% 50%;
+    --accent-foreground: 222 47% 11%;
+    --destructive: 0 100% 60%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217 32% 17%;
+    --input: 217 32% 17%;
+    --ring: 263 90% 65%;
     --chart-1: 220 70% 50%;
     --chart-2: 160 60% 45%;
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
     --radius: 0.75rem;
+  }
+
+  .light {
+    --background: 0 0% 100%;
+    --foreground: 224 71% 4%;
+    --card: 0 0% 98%;
+    --card-foreground: 224 71% 4%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 224 71% 4%;
+    --primary: 263 70% 50%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 220 14% 96%;
+    --secondary-foreground: 224 71% 4%;
+    --muted: 220 14% 96%;
+    --muted-foreground: 220 9% 46%;
+    --accent: 220 14% 96%;
+    --accent-foreground: 224 71% 4%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 263 70% 50%;
   }
 
   .dark {
@@ -38,14 +60,12 @@
     --popover: 222 47% 11%;
     --popover-foreground: 210 40% 98%;
     --primary: 263 90% 65%;
-    /* Neon Purple */
     --primary-foreground: 210 40% 98%;
     --secondary: 217 32% 17%;
     --secondary-foreground: 210 40% 98%;
     --muted: 217 32% 17%;
     --muted-foreground: 215 20% 65%;
     --accent: 180 100% 50%;
-    /* Cyan Neon */
     --accent-foreground: 222 47% 11%;
     --destructive: 0 100% 60%;
     --destructive-foreground: 210 40% 98%;
@@ -63,21 +83,43 @@
   body {
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
+  }
+
+  /* Dark mode gradient background */
+  .dark body,
+  :root body {
     background-image:
       radial-gradient(circle at 15% 50%, rgba(76, 29, 149, 0.15), transparent 25%),
       radial-gradient(circle at 85% 30%, rgba(6, 182, 212, 0.15), transparent 25%);
+    background-attachment: fixed;
+  }
+
+  /* Light mode clean background */
+  .light body {
+    background-image:
+      radial-gradient(circle at 15% 50%, rgba(139, 92, 246, 0.08), transparent 35%),
+      radial-gradient(circle at 85% 30%, rgba(59, 130, 246, 0.08), transparent 35%);
     background-attachment: fixed;
   }
 }
 
 /* Custom Glassmorphism Utilities */
 @layer utilities {
+
+  /* Dark mode glass */
   .glass {
     background-color: rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(16px);
     border-width: 1px;
     border-color: rgba(255, 255, 255, 0.1);
     box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  }
+
+  /* Light mode glass */
+  .light .glass {
+    background-color: rgba(255, 255, 255, 0.8);
+    border-color: rgba(0, 0, 0, 0.08);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
   }
 
   .glass-card {
@@ -88,6 +130,11 @@
     transition-duration: 300ms;
     background-color: hsl(var(--card) / 0.4);
     border-color: rgba(255, 255, 255, 0.05);
+  }
+
+  .light .glass-card {
+    background-color: hsl(var(--card) / 0.9);
+    border-color: rgba(0, 0, 0, 0.08);
   }
 
   .glass-card:hover {
@@ -110,7 +157,7 @@
     scrollbar-width: none;
   }
 
-  /* Custom Translucent Scrollbar */
+  /* Custom Translucent Scrollbar - Dark Mode */
   ::-webkit-scrollbar {
     width: 6px;
     height: 6px;
@@ -130,10 +177,23 @@
     background: rgba(255, 255, 255, 0.2);
   }
 
+  /* Light mode scrollbar */
+  .light ::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.15);
+  }
+
+  .light ::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.25);
+  }
+
   /* Firefox */
   * {
     scrollbar-width: thin;
     scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+  }
+
+  .light * {
+    scrollbar-color: rgba(0, 0, 0, 0.15) transparent;
   }
 }
 

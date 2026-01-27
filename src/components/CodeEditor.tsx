@@ -51,35 +51,35 @@ export function CodeEditor({ code, language, isDarkMode, readOnly = false, onCha
       })
     }
 
-    // Custom Web3 Dark Theme
-    monaco.editor.defineTheme('web3-dark', {
-      base: 'vs-dark',
+    // Custom Web3 Light Theme
+    monaco.editor.defineTheme('web3-light', {
+      base: 'vs',
       inherit: true,
       rules: [
-        { token: 'keyword', foreground: 'c084fc', fontStyle: 'bold' }, // Purple-400
-        { token: 'type', foreground: '22d3ee' }, // Cyan-400
-        { token: 'string', foreground: '4ade80' }, // Green-400
-        { token: 'number', foreground: 'f472b6' }, // Pink-400
+        { token: 'keyword', foreground: '7c3aed', fontStyle: 'bold' }, // Purple-600
+        { token: 'type', foreground: '0891b2' }, // Cyan-600
+        { token: 'string', foreground: '16a34a' }, // Green-600
+        { token: 'number', foreground: 'db2777' }, // Pink-600
         { token: 'comment', foreground: '64748b', fontStyle: 'italic' }, // Slate-500
-        { token: 'variable.predefined', foreground: 'fbbf24' }, // Amber-400
-        { token: 'identifier', foreground: 'e2e8f0' }, // Slate-200
-        { token: 'delimiter', foreground: '94a3b8' }, // Slate-400
+        { token: 'variable.predefined', foreground: 'd97706' }, // Amber-600
+        { token: 'identifier', foreground: '0f172a' }, // Slate-900
+        { token: 'delimiter', foreground: '475569' }, // Slate-600
       ],
       colors: {
         'editor.background': '#00000000', // Transparent
-        'editor.foreground': '#e2e8f0',
-        'editor.lineHighlightBackground': '#ffffff0a',
-        'editorCursor.foreground': '#22d3ee',
-        'editorIndentGuide.background': '#ffffff1a',
-        'editor.selectionBackground': '#22d3ee33',
-        'scrollbarSlider.background': '#ffffff1a',
-        'scrollbarSlider.hoverBackground': '#ffffff33',
-        'scrollbarSlider.activeBackground': '#ffffff4d',
+        'editor.foreground': '#0f172a',
+        'editor.lineHighlightBackground': '#0000000a',
+        'editorCursor.foreground': '#7c3aed',
+        'editorIndentGuide.background': '#0000001a',
+        'editor.selectionBackground': '#7c3aed33',
+        'scrollbarSlider.background': '#0000001a',
+        'scrollbarSlider.hoverBackground': '#00000033',
+        'scrollbarSlider.activeBackground': '#0000004d',
         'widget.shadow': '#00000000',
       }
     })
 
-    monaco.editor.setTheme('web3-dark')
+    monaco.editor.setTheme(isDarkMode ? 'web3-dark' : 'web3-light')
   }
 
   // Update theme when prop changes
@@ -87,7 +87,7 @@ export function CodeEditor({ code, language, isDarkMode, readOnly = false, onCha
     if (editorRef.current) {
       const monaco = (window as any).monaco
       if (monaco) {
-        monaco.editor.setTheme(isDarkMode ? 'web3-dark' : 'vs')
+        monaco.editor.setTheme(isDarkMode ? 'web3-dark' : 'web3-light')
       }
     }
   }, [isDarkMode])

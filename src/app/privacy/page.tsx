@@ -20,7 +20,7 @@ export default function PrivacyPolicyPage() {
             <header className="h-20 border-b border-white/5 flex items-center justify-between px-8 relative z-50 glass sticky top-0">
                 <div className="flex items-center gap-6">
                     <Link href="/">
-                        <Button variant="ghost" size="sm" className="gap-2 text-muted-foreground hover:text-white">
+                        <Button variant="ghost" size="sm" className="gap-2 text-muted-foreground hover:text-foreground">
                             <ArrowLeft className="w-4 h-4" />
                             Back to Home
                         </Button>
@@ -46,7 +46,7 @@ export default function PrivacyPolicyPage() {
                             Data Collection
                         </h2>
                         <p className="text-slate-300">
-                            Security Playground is designed to be a <span className="text-white font-semibold">zero-tracking platform</span>. We do not have a backend database, and we do not collect, store, or sell any personal information. You do not need an account to use the platform.
+                            Security Playground is designed to be a <span className="text-foreground font-semibold">zero-tracking platform</span>. We do not have a backend database, and we do not collect, store, or sell any personal information. You do not need an account to use the platform.
                         </p>
                     </section>
 

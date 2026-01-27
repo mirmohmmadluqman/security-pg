@@ -12,8 +12,8 @@ import {
 import { Palette } from "lucide-react"
 
 const themes = [
-    { name: "light", label: "Light" },
     { name: "dark", label: "Dark" },
+    { name: "light", label: "Light" },
     { name: "cyberpunk", label: "Cyberpunk" },
     { name: "minimalist", label: "Minimalist" },
     { name: "glass", label: "Glassmorphism" },

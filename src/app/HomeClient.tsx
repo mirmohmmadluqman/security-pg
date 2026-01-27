@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { modules } from '@/lib/modules'
 import { ModuleCard } from '@/components/ModuleCard'
 import { Button } from '@/components/ui/button'
-import { Terminal, Shield, Zap, Bug, Lock, Cpu } from 'lucide-react'
+import { Terminal, Shield, Zap, Bug, Lock, Cpu, BookOpen } from 'lucide-react'
 import { ThemeSelector } from '@/components/ThemeSelector'
 import { motion } from 'framer-motion'
 import { useTheme } from 'next-themes'
@@ -13,12 +13,14 @@ import { Footer } from '@/components/Footer'
 import Link from 'next/link'
 
 export default function HomeClient() {
-  const { theme } = useTheme()
+  const { theme, resolvedTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
     setMounted(true)
   }, [])
+
+  const isDark = mounted && (resolvedTheme === 'dark' || theme === 'dark')
 
   // Icons mapping for categories
   const getIconForModule = (id: string) => {
@@ -49,6 +51,9 @@ export default function HomeClient() {
               <Link href="/library" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
                 Library
               </Link>
+              <Link href="/solidity" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
+                Solidity
+              </Link>
             </nav>
           </div>
           <ThemeSelector />
@@ -60,7 +65,7 @@ export default function HomeClient() {
           transition={{ duration: 0.8 }}
           className="text-center mb-24 animate-float"
         >
-          <div className="inline-block mb-4 px-4 py-1.5 rounded-full border border-primary/30 bg-primary/10 text-primary text-sm font-medium backdrop-blur-sm">
+          <div className="inline-block mb-4 px-4 py-1.5 rounded-full border border-primary/20 bg-primary/5 text-primary text-sm font-medium backdrop-blur-sm">
             🚀 Interactive Web3 Security Environment
           </div>
           <h1 className="text-6xl md:text-8xl font-black mb-6 tracking-tight">
@@ -73,7 +78,7 @@ export default function HomeClient() {
             <Button size="lg" className="text-lg px-8 h-14 rounded-full bg-primary hover:bg-primary/90 shadow-lg shadow-primary/25 border-0 font-bold" asChild>
               <Link href="/challenges">Start Hacking</Link>
             </Button>
-            <Button size="lg" variant="outline" className="text-lg px-8 h-14 rounded-full border-white/10 hover:bg-white/5 backdrop-blur-sm" asChild>
+            <Button size="lg" variant="outline" className="text-lg px-8 h-14 rounded-full border-border hover:bg-muted backdrop-blur-sm" asChild>
               <Link href="https://github.com/mirmohmadluqman/security-pg#readme" target="_blank">
                 View Documentation
               </Link>
@@ -82,20 +87,28 @@ export default function HomeClient() {
         </motion.div>
 
         {/* Stats / Features Grid */}
-        <div className="grid md:grid-cols-3 gap-6 mb-24">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-24">
           {[
             { icon: Terminal, title: "Real-World Exploits", desc: "Execute actual attack vectors in a sandboxed EVM." },
             { icon: Shield, title: "Interactive Defense", desc: "Patch vulnerabilities and verify fixes instantly." },
-            { icon: Zap, title: "Instant Feedback", desc: "Real-time compilation and execution logs." }
-          ].map((feature, i) => (
-            <div key={i} className="glass p-8 rounded-2xl flex flex-col items-center text-center hover:scale-105 transition-transform duration-300">
-              <div className="p-4 rounded-full bg-primary/10 text-primary mb-4">
-                <feature.icon size={32} />
+            { icon: Zap, title: "Instant Feedback", desc: "Real-time compilation and execution logs." },
+            { icon: BookOpen, title: "Solidity Lessons", desc: "129 hands-on lessons from basics to DeFi.", link: "/solidity" }
+          ].map((feature, i) => {
+            const CardContent = (
+              <div className={`glass p-8 rounded-2xl flex flex-col items-center text-center hover:scale-105 transition-transform duration-300 h-full ${feature.link ? 'cursor-pointer' : ''}`}>
+                <div className="p-4 rounded-full bg-primary/10 text-primary mb-4">
+                  <feature.icon size={32} />
+                </div>
+                <h3 className="text-xl font-bold mb-2">{feature.title}</h3>
+                <p className="text-muted-foreground">{feature.desc}</p>
               </div>
-              <h3 className="text-xl font-bold mb-2">{feature.title}</h3>
-              <p className="text-muted-foreground">{feature.desc}</p>
-            </div>
-          ))}
+            )
+            return feature.link ? (
+              <Link key={i} href={feature.link}>{CardContent}</Link>
+            ) : (
+              <div key={i}>{CardContent}</div>
+            )
+          })}
         </div>
 
         <motion.div
@@ -106,7 +119,7 @@ export default function HomeClient() {
           <div className="flex items-center justify-between mb-8">
             <h2 className="text-3xl font-bold">Active Challenges</h2>
             <Link href="/challenges">
-              <Button variant="ghost" className="text-muted-foreground hover:text-white">
+              <Button variant="ghost" className="text-muted-foreground hover:text-foreground">
                 View All →
               </Button>
             </Link>

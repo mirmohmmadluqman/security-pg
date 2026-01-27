@@ -48,8 +48,14 @@ export default function ChallengeClient({ challengeId }: { challengeId: string }
     const [isDeployed, setIsDeployed] = useState(false)
     const [code, setCode] = useState('')
     const [logs, setLogs] = useState<string[]>([])
-    const { setTheme } = useTheme()
+    const { theme, setTheme, resolvedTheme } = useTheme()
     const [mounted, setMounted] = useState(false)
+
+    useEffect(() => {
+        setMounted(true)
+    }, [])
+
+    const isDarkMode = mounted && (resolvedTheme === 'dark' || theme === 'dark')
 
     // Panel Refs for Layout Control
     const leftPanelRef = useRef<ImperativePanelHandle>(null)
@@ -280,25 +286,25 @@ export default function ChallengeClient({ challengeId }: { challengeId: string }
                 <div className="absolute top-4 right-4 z-[100] animate-in fade-in zoom-in duration-300">
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                            <Button variant="outline" size="icon" className="h-10 w-10 bg-black/50 backdrop-blur-md border-primary/20 hover:border-primary transition-all rounded-full">
+                            <Button variant="outline" size="icon" className="h-10 w-10 bg-background/50 backdrop-blur-md border-primary/20 hover:border-primary transition-all rounded-full">
                                 <Settings className="w-5 h-5 text-primary" />
                             </Button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="w-64 bg-[#0a0a0a] border-white/10 text-slate-300">
+                        <DropdownMenuContent align="end" className="w-64 bg-popover border-border text-foreground">
                             <DropdownMenuLabel>Workshop Settings</DropdownMenuLabel>
-                            <DropdownMenuSeparator className="bg-white/10" />
+                            <DropdownMenuSeparator className="bg-border" />
                             <DropdownMenuItem onClick={() => setShowTopBar(true)}>
                                 <Layout className="w-4 h-4 mr-2" />
                                 <span>Show Top Bar</span>
                                 <span className="ml-auto text-[10px] opacity-50">Ctrl+2</span>
                             </DropdownMenuItem>
-                            <DropdownMenuSeparator className="bg-white/10" />
+                            <DropdownMenuSeparator className="bg-border" />
                             <DropdownMenuSub>
                                 <DropdownMenuSubTrigger>
                                     <Palette className="w-4 h-4 mr-2" />
                                     <span>Theme</span>
                                 </DropdownMenuSubTrigger>
-                                <DropdownMenuSubContent className="bg-[#0a0a0a] border-white/10">
+                                <DropdownMenuSubContent className="bg-popover border-border">
                                     {["dark", "light", "cyberpunk", "minimalist"].map((t) => (
                                         <DropdownMenuItem key={t} onClick={() => setTheme(t)}>{t}</DropdownMenuItem>
                                     ))}
@@ -311,20 +317,20 @@ export default function ChallengeClient({ challengeId }: { challengeId: string }
 
             {/* Header */}
             {showTopBar && (
-                <header className="h-14 glass border-b border-white/5 flex items-center justify-between px-4 sticky top-0 z-50 shrink-0 select-none animate-in slide-in-from-top duration-300">
+                <header className="h-14 glass border-b flex items-center justify-between px-4 sticky top-0 z-50 shrink-0 select-none animate-in slide-in-from-top duration-300">
                     <div className="flex items-center gap-4">
                         <Link href="/challenges">
                             <Button
                                 variant="ghost"
                                 size="sm"
-                                className="gap-2 h-9 px-3 hover:bg-white/5 text-muted-foreground hover:text-foreground transition-colors"
+                                className="gap-2 h-9 px-3 hover:bg-accent text-muted-foreground hover:text-foreground transition-colors"
                             >
                                 <ArrowLeft className="w-4 h-4" />
                                 <span className="hidden md:inline">Back</span>
                             </Button>
                         </Link>
-                        <div className="h-6 w-px bg-white/10 hidden md:block" />
-                        <h1 className="text-sm md:text-base font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-white/60 truncate max-w-[200px] md:max-w-md">
+                        <div className="h-6 w-px bg-border hidden md:block" />
+                        <h1 className="text-sm md:text-base font-bold text-foreground truncate max-w-[200px] md:max-w-md">
                             {selectedModule.title}
                         </h1>
                     </div>
@@ -334,7 +340,7 @@ export default function ChallengeClient({ challengeId }: { challengeId: string }
                         <Button
                             variant="ghost"
                             size="icon"
-                            className={cn("h-8 w-8 text-muted-foreground hover:text-white hidden md:flex", leftBlocked && "text-primary bg-primary/10")}
+                            className={cn("h-8 w-8 text-muted-foreground hover:text-foreground hidden md:flex", leftBlocked && "text-primary bg-primary/10")}
                             onClick={toggleLeftPanel}
                             title="Toggle Sidebar (Ctrl+1)"
                         >
@@ -344,14 +350,14 @@ export default function ChallengeClient({ challengeId }: { challengeId: string }
                         <Button
                             variant="ghost"
                             size="icon"
-                            className={cn("h-8 w-8 text-muted-foreground hover:text-white hidden md:flex", rightBlocked && "text-primary bg-primary/10")}
+                            className={cn("h-8 w-8 text-muted-foreground hover:text-foreground hidden md:flex", rightBlocked && "text-primary bg-primary/10")}
                             onClick={toggleRightPanel}
                             title="Toggle Terminal (Ctrl+`)"
                         >
                             <PanelRight className="w-4 h-4" />
                         </Button>
 
-                        <div className="h-6 w-px bg-white/10 mx-2" />
+                        <div className="h-6 w-px bg-border mx-2" />
 
                         <div className="hidden md:flex px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-[10px] font-mono text-primary items-center gap-2">
                             <span className="relative flex h-1.5 w-1.5">
@@ -364,20 +370,20 @@ export default function ChallengeClient({ challengeId }: { challengeId: string }
                         {/* Settings Menu */}
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                                <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-white">
+                                <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-foreground">
                                     <Settings className="w-4 h-4 transition-transform hover:rotate-45 duration-500" />
                                 </Button>
                             </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end" className="w-64 bg-[#0a0a0a] border-white/10 text-slate-300">
+                            <DropdownMenuContent align="end" className="w-64 bg-popover border-border text-foreground">
                                 <DropdownMenuLabel>Workshop Settings</DropdownMenuLabel>
-                                <DropdownMenuSeparator className="bg-white/10" />
+                                <DropdownMenuSeparator className="bg-border" />
 
                                 <DropdownMenuSub>
                                     <DropdownMenuSubTrigger>
                                         <Palette className="w-4 h-4 mr-2" />
                                         <span>Theme</span>
                                     </DropdownMenuSubTrigger>
-                                    <DropdownMenuSubContent className="bg-[#0a0a0a] border-white/10">
+                                    <DropdownMenuSubContent className="bg-popover border-border">
                                         {[
                                             { name: "dark", label: "Dark" },
                                             { name: "light", label: "Light" },
@@ -396,7 +402,7 @@ export default function ChallengeClient({ challengeId }: { challengeId: string }
                                         <Layout className="w-4 h-4 mr-2" />
                                         <span>View</span>
                                     </DropdownMenuSubTrigger>
-                                    <DropdownMenuSubContent className="bg-[#0a0a0a] border-white/10">
+                                    <DropdownMenuSubContent className="bg-popover border-border">
                                         <DropdownMenuItem onClick={toggleLeftPanel}>
                                             <Sidebar className="w-4 h-4 mr-2" />
                                             <span>Toggle Sidebar</span>
@@ -437,15 +443,15 @@ export default function ChallengeClient({ challengeId }: { challengeId: string }
                         collapsible
                         onCollapse={() => setLeftBlocked(true)}
                         onExpand={() => setLeftBlocked(false)}
-                        className={cn("bg-card/30 backdrop-blur-sm border-r border-white/5 transition-all duration-300", leftBlocked && "min-w-[0px] w-0 border-none opacity-0")}
+                        className={cn("bg-card/30 backdrop-blur-sm border-r border-border transition-all duration-300", leftBlocked && "min-w-[0px] w-0 border-none opacity-0")}
                     >
                         <div className="h-full overflow-y-auto custom-scrollbar">
                             <InfoPanel module={selectedModule} />
                         </div>
                     </Panel>
 
-                    <PanelResizeHandle className="w-1 bg-[#1a1a1a] hover:bg-primary/50 transition-colors cursor-col-resize active:bg-primary/80 flex flex-col justify-center items-center group">
-                        <div className="w-0.5 h-8 bg-white/20 rounded-full group-hover:bg-white/50" />
+                    <PanelResizeHandle className="w-1 bg-border/50 hover:bg-primary/50 transition-colors cursor-col-resize active:bg-primary/80 flex flex-col justify-center items-center group">
+                        <div className="w-0.5 h-8 bg-foreground/20 rounded-full group-hover:bg-foreground/50" />
                     </PanelResizeHandle>
 
                     {/* Middle Panel - Code + Action Area */}
@@ -454,7 +460,7 @@ export default function ChallengeClient({ challengeId }: { challengeId: string }
                             <Panel minSize={30}>
                                 <div className="h-full flex flex-col bg-background/50">
                                     <Tabs value={activeTab} onValueChange={handleTabChange} className="flex-1 flex flex-col overflow-hidden">
-                                        <div className="border-b border-white/5 bg-black/20 px-4 shrink-0 flex items-center justify-between">
+                                        <div className="border-b border-border bg-accent/20 px-4 shrink-0 flex items-center justify-between">
                                             <TabsList className="bg-transparent justify-start h-12 gap-2">
                                                 <TabsTrigger value="vulnerable" className="data-[state=active]:bg-primary/20 data-[state=active]:text-primary border border-transparent data-[state=active]:border-primary/20 text-xs md:text-sm">
                                                     <Bug className="w-3.5 h-3.5 mr-2" />
@@ -476,7 +482,7 @@ export default function ChallengeClient({ challengeId }: { challengeId: string }
                                                 <CodeEditor
                                                     code={code}
                                                     language="solidity"
-                                                    isDarkMode={true}
+                                                    isDarkMode={isDarkMode}
                                                     readOnly={activeTab === 'attack'}
                                                     onChange={setCode}
                                                     className="h-full w-full"
@@ -487,8 +493,8 @@ export default function ChallengeClient({ challengeId }: { challengeId: string }
                                 </div>
                             </Panel>
 
-                            <PanelResizeHandle className={cn("h-1 bg-[#1a1a1a] hover:bg-primary/50 transition-colors cursor-row-resize active:bg-primary/80 flex justify-center items-center group", bottomBlocked && "hidden")}>
-                                <div className="h-0.5 w-8 bg-white/20 rounded-full group-hover:bg-white/50" />
+                            <PanelResizeHandle className={cn("h-1 bg-border/50 hover:bg-primary/50 transition-colors cursor-row-resize active:bg-primary/80 flex justify-center items-center group", bottomBlocked && "hidden")}>
+                                <div className="h-0.5 w-8 bg-foreground/20 rounded-full group-hover:bg-foreground/50" />
                             </PanelResizeHandle>
 
                             {/* Action Buttons (Bottom adjustable panel) */}
@@ -499,13 +505,13 @@ export default function ChallengeClient({ challengeId }: { challengeId: string }
                                 collapsible
                                 onCollapse={() => setBottomBlocked(true)}
                                 onExpand={() => setBottomBlocked(false)}
-                                className={cn("border-t border-white/5 bg-black/20 backdrop-blur-md z-20 transition-all duration-300", bottomBlocked && "h-0 opacity-0 overflow-hidden border-none")}
+                                className={cn("border-t border-border bg-accent/20 backdrop-blur-md z-20 transition-all duration-300", bottomBlocked && "h-0 opacity-0 overflow-hidden border-none")}
                             >
                                 <div className="p-4 h-full">
                                     <ActionButtons
                                         selectedModule={selectedModule}
                                         activeTab={activeTab}
-                                        isDarkMode={true}
+                                        isDarkMode={isDarkMode}
                                         onToggleDarkMode={() => { }}
                                         onCompile={handleCompile}
                                         onDeploy={handleDeploy}
@@ -520,8 +526,8 @@ export default function ChallengeClient({ challengeId }: { challengeId: string }
                         </PanelGroup>
                     </Panel>
 
-                    <PanelResizeHandle className="w-1 bg-[#1a1a1a] hover:bg-primary/50 transition-colors cursor-col-resize active:bg-primary/80 flex flex-col justify-center items-center group">
-                        <div className="w-0.5 h-8 bg-white/20 rounded-full group-hover:bg-white/50" />
+                    <PanelResizeHandle className="w-1 bg-border/50 hover:bg-primary/50 transition-colors cursor-col-resize active:bg-primary/80 flex flex-col justify-center items-center group">
+                        <div className="w-0.5 h-8 bg-foreground/20 rounded-full group-hover:bg-foreground/50" />
                     </PanelResizeHandle>
 
                     {/* Right Panel - Terminal */}
@@ -532,10 +538,10 @@ export default function ChallengeClient({ challengeId }: { challengeId: string }
                         collapsible
                         onCollapse={() => setRightBlocked(true)}
                         onExpand={() => setRightBlocked(false)}
-                        className={cn("bg-black/40 border-l border-white/5 transition-all duration-300", rightBlocked && "min-w-[0px] w-0 border-none opacity-0")}
+                        className={cn("bg-accent/40 border-l border-border transition-all duration-300", rightBlocked && "min-w-[0px] w-0 border-none opacity-0")}
                     >
                         <div className="h-full flex flex-col min-h-0">
-                            <div className="p-3 border-b border-white/5 font-mono text-xs font-bold flex items-center gap-2 text-muted-foreground bg-black/20 shrink-0">
+                            <div className="p-3 border-b border-border font-mono text-xs font-bold flex items-center gap-2 text-muted-foreground bg-accent/20 shrink-0">
                                 <Terminal className="w-3 h-3" />
                                 TERMINAL_OUTPUT
                             </div>

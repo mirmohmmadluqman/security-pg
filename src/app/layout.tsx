@@ -62,7 +62,7 @@ export default function RootLayout({
           defaultTheme="dark"
           enableSystem={false}
           disableTransitionOnChange
-          themes={["light", "dark", "cyberpunk", "minimalist", "glass", "neobrutalism", "enterprise"]}
+          themes={["dark", "light", "cyberpunk", "minimalist", "glass", "neobrutalism", "enterprise"]}
         >
           <ImageZoomProvider>
             {children}
