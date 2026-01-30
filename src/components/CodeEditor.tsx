@@ -66,7 +66,7 @@ export function CodeEditor({ code, language, isDarkMode, readOnly = false, onCha
         { token: 'delimiter', foreground: '94a3b8' }, // Slate-400
       ],
       colors: {
-        'editor.background': '#00000000', // Transparent to inherit glass/dark bg
+        'editor.background': '#020617', // Slate-950
         'editor.foreground': '#e2e8f0',
         'editor.lineHighlightBackground': '#ffffff0a',
         'editorCursor.foreground': '#a78bfa',

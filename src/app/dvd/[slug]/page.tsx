@@ -19,7 +19,11 @@ import {
     ChevronLeft,
     ChevronRight,
     Terminal,
-    Code2
+    Code2,
+    PanelLeftClose,
+    PanelLeftOpen,
+    PanelBottomClose,
+    PanelBottomOpen
 } from 'lucide-react'
 import Link from 'next/link'
 import { getDVDChallengeBySlug } from '@/lib/dvd'
@@ -40,6 +44,23 @@ export default function DVDChallengePage() {
         'ready to hack...',
         'use the player account for all transactions.'
     ])
+    const [isSidebarOpen, setIsSidebarOpen] = useState(true)
+    const [isTerminalOpen, setIsTerminalOpen] = useState(true)
+
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if ((e.metaKey || e.ctrlKey) && e.key === 'b') {
+                e.preventDefault()
+                setIsSidebarOpen(prev => !prev)
+            }
+            if ((e.metaKey || e.ctrlKey) && e.key === 'j') {
+                e.preventDefault()
+                setIsTerminalOpen(prev => !prev)
+            }
+        }
+        window.addEventListener('keydown', handleKeyDown)
+        return () => window.removeEventListener('keydown', handleKeyDown)
+    }, [])
 
     useEffect(() => {
         setMounted(true)
@@ -81,6 +102,15 @@ export default function DVDChallengePage() {
                         Back
                     </Button>
                     <div className="w-px h-6 bg-border" />
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 text-muted-foreground hover:text-foreground"
+                        onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                        title={isSidebarOpen ? "Close Sidebar (Ctrl+B)" : "Open Sidebar (Ctrl+B)"}
+                    >
+                        {isSidebarOpen ? <PanelLeftClose size={18} /> : <PanelLeftOpen size={18} />}
+                    </Button>
                     <div className="flex items-center gap-3">
                         <div className="p-1.5 rounded-lg bg-red-500/10 text-red-500">
                             <Shield size={18} />
@@ -99,11 +129,14 @@ export default function DVDChallengePage() {
 
             <div className="flex-1 flex overflow-hidden">
                 {/* Left Pane: Scenario & Info (Scrollable) */}
-                <aside className="w-[450px] border-r border-border flex flex-col shrink-0 bg-background/50">
-                    <div className="flex-1 overflow-y-auto custom-scrollbar p-6">
-                        <ScenarioPanel challenge={challenge} />
-                    </div>
-                </aside>
+                {/* Left Pane: Scenario & Info (Scrollable) */}
+                {isSidebarOpen && (
+                    <aside className="w-[450px] border-r border-border flex flex-col shrink-0 bg-background/50 transition-all duration-300">
+                        <div className="flex-1 overflow-y-auto custom-scrollbar p-6">
+                            <ScenarioPanel challenge={challenge} />
+                        </div>
+                    </aside>
+                )}
 
                 {/* Main Pane: Code & Console (Split) */}
                 <main className="flex-1 flex flex-col min-w-0 bg-accent/5">
@@ -146,6 +179,15 @@ export default function DVDChallengePage() {
 
                             <div className="flex gap-2">
                                 <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="h-8 w-8 text-muted-foreground hover:text-foreground transition-colors"
+                                    onClick={() => setIsTerminalOpen(!isTerminalOpen)}
+                                    title={isTerminalOpen ? "Close Terminal (Ctrl+J)" : "Open Terminal (Ctrl+J)"}
+                                >
+                                    {isTerminalOpen ? <PanelBottomClose size={18} /> : <PanelBottomOpen size={18} />}
+                                </Button>
+                                <Button
                                     size="sm"
                                     className="h-8 rounded-full bg-red-600 hover:bg-red-700 gap-2"
                                     onClick={handleRunExploit}
@@ -182,15 +224,17 @@ export default function DVDChallengePage() {
                     </div>
 
                     {/* Bottom Section: Console */}
-                    <div className="h-[250px] flex flex-col bg-background border-t border-border">
-                        <div className="h-10 px-4 flex items-center gap-2 border-b border-border shrink-0 bg-muted/30">
-                            <Terminal size={14} className="text-muted-foreground/60" />
-                            <span className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground/60">DVVM Terminal v4.1</span>
+                    {isTerminalOpen && (
+                        <div className="h-[250px] flex flex-col bg-background border-t border-border transition-all duration-300">
+                            <div className="h-10 px-4 flex items-center gap-2 border-b border-border shrink-0 bg-muted/30">
+                                <Terminal size={14} className="text-muted-foreground/60" />
+                                <span className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground/60">DVVM Terminal v4.1</span>
+                            </div>
+                            <div className="flex-1 overflow-hidden">
+                                <VMConsole logs={logs} isRunning={isRunning} />
+                            </div>
                         </div>
-                        <div className="flex-1 overflow-hidden">
-                            <VMConsole logs={logs} isRunning={isRunning} />
-                        </div>
-                    </div>
+                    )}
                 </main>
             </div>
         </div>
