@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "@/components/theme-provider";
 import { LegalGate } from "@/components/LegalGate";
 import { ImageZoomProvider } from "@/components/ImageZoom";
+import { MotionProvider } from "@/components/MotionProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -62,10 +63,12 @@ export default function RootLayout({
           defaultTheme="dark"
           enableSystem={false}
           disableTransitionOnChange
-          themes={["dark", "light", "cyberpunk", "minimalist", "glass", "neobrutalism", "enterprise"]}
+          themes={["dark", "light", "cyberpunk", "minimalist-light", "minimalist-dark", "glass", "neobrutalism", "enterprise"]}
         >
           <ImageZoomProvider>
-            {children}
+            <MotionProvider>
+              {children}
+            </MotionProvider>
             <LegalGate />
             <Toaster />
           </ImageZoomProvider>

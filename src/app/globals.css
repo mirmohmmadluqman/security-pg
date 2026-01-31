@@ -73,6 +73,52 @@
     --input: 217 32% 17%;
     --ring: 263 90% 65%;
   }
+
+  .minimalist-light {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 0%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 0%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 0%;
+    --primary: 0 0% 0%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 0%;
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 40%;
+    --accent: 0 0% 90%;
+    --accent-foreground: 0 0% 0%;
+    --destructive: 0 100% 50%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 0 0% 80%;
+    --input: 0 0% 80%;
+    --ring: 0 0% 0%;
+    --radius: 0rem;
+  }
+
+  .minimalist-dark {
+    --background: 0 0% 0%;
+    --foreground: 0 0% 100%;
+    --card: 0 0% 0%;
+    --card-foreground: 0 0% 100%;
+    --popover: 0 0% 0%;
+    --popover-foreground: 0 0% 100%;
+    --primary: 0 0% 100%;
+    --primary-foreground: 0 0% 0%;
+    --secondary: 0 0% 10%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 0 0% 10%;
+    --muted-foreground: 0 0% 60%;
+    --accent: 0 0% 20%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 100% 50%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 0 0% 20%;
+    --input: 0 0% 20%;
+    --ring: 0 0% 100%;
+    --radius: 0rem;
+  }
 }
 
 @layer base {
@@ -100,6 +146,13 @@
       radial-gradient(circle at 15% 50%, rgba(139, 92, 246, 0.08), transparent 35%),
       radial-gradient(circle at 85% 30%, rgba(59, 130, 246, 0.08), transparent 35%);
     background-attachment: fixed;
+  }
+
+  /* Disable backgrounds for minimalist */
+  .minimalist-light body,
+  .minimalist-dark body {
+    background-image: none !important;
+    background-color: hsl(var(--background)) !important;
   }
 }
 
@@ -214,4 +267,56 @@
 
 .animate-float {
   animation: float 6s ease-in-out infinite;
+}
+
+/* 
+  ULTRA MINIMALIST OVERRIDES 
+  Optimized for low-end devices by stripping away all complex CSS effects
+*/
+[class*="minimalist-"] {
+
+  /* Disable all transitions, animations, blurs, and shadows globally */
+  &,
+  & * {
+    transition: none !important;
+    animation: none !important;
+    backdrop-filter: none !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* Force solid backgrounds and plain borders */
+  .glass,
+  .glass-card {
+    background-color: hsl(var(--card)) !important;
+    border: 1px solid hsl(var(--border)) !important;
+  }
+
+  /* Strip text gradients */
+  .text-gradient {
+    background-image: none !important;
+    color: hsl(var(--primary)) !important;
+    -webkit-background-clip: initial !important;
+    background-clip: initial !important;
+  }
+
+  /* Simple scrollbars */
+  * {
+    scrollbar-width: auto !important;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px !important;
+    height: 10px !important;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--border)) !important;
+    border-radius: 0 !important;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: hsl(var(--background)) !important;
+  }
 }
