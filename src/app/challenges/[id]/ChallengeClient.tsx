@@ -39,6 +39,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { Panel, PanelGroup, PanelResizeHandle, ImperativePanelHandle } from 'react-resizable-panels'
 import { CompactNav } from '@/components/CompactNav'
+import { cn } from '@/lib/utils'
 import { useWallet } from '@/context/WalletContext'
 
 export type IDEStatus = 'idle' | 'compiling' | 'deploying' | 'executing' | 'success' | 'error'
