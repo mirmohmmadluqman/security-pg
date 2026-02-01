@@ -11,7 +11,7 @@ import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
 
-import { Header } from '@/components/Header'
+import { CompactNav } from '@/components/CompactNav'
 import { Footer } from '@/components/Footer'
 
 export default function LibraryPage() {
@@ -19,13 +19,13 @@ export default function LibraryPage() {
 
     return (
         <div className="min-h-screen relative overflow-hidden bg-background flex flex-col">
-            <Header />
+            <CompactNav />
 
             {/* Background Effects */}
             <div className="absolute top-0 left-1/4 w-[800px] h-[800px] bg-purple-600/10 rounded-none blur-[160px] pointer-events-none opacity-50" />
             <div className="absolute bottom-[-10%] right-[10%] w-[600px] h-[600px] bg-cyan-600/5 rounded-none blur-[140px] pointer-events-none opacity-30" />
 
-            <div className="max-w-7xl mx-auto px-6 pt-32 pb-8 relative z-10 flex-1">
+            <div className="max-w-7xl mx-auto px-6 pt-20 pb-8 relative z-10 flex-1">
 
                 {/* Hero Section */}
                 <motion.div

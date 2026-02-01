@@ -8,7 +8,7 @@ import { Logo } from '@/components/Logo'
 import { ThemeSelector } from '@/components/ThemeSelector'
 import { Button } from '@/components/ui/button'
 import { getAllCategories, getLessonsByCategory } from '@/lib/solidity'
-import { Header } from '@/components/Header'
+import { CompactNav } from '@/components/CompactNav'
 import { Footer } from '@/components/Footer'
 import { ArrowLeft, BookOpen, Code2, Shield, Cpu, TestTube, Hammer, Coins, ChevronRight, MessageCircle, Bug, Search } from 'lucide-react'
 
@@ -45,23 +45,12 @@ export default function CategoryPage() {
             {/* Background Effects */}
             <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-purple-600/10 rounded-full blur-[120px] pointer-events-none" />
 
-            {/* Header */}
-            <header className="h-20 border-b flex items-center justify-between px-8 relative z-50 glass sticky top-0 bg-background/80 backdrop-blur-md">
-                <div className="flex items-center gap-6">
-                    <Link href="/solidity">
-                        <Button variant="ghost" size="sm" className="gap-2 text-muted-foreground hover:text-foreground">
-                            <ArrowLeft className="w-4 h-4" />
-                            All Categories
-                        </Button>
-                    </Link>
-                    <Logo />
-                </div>
-                <ThemeSelector />
-            </header>
+            {/* Compact Header */}
+            <CompactNav backHref="/solidity" backLabel="Solidity" />
 
             <div className="flex-1 flex">
                 {/* Sidebar */}
-                <aside className="hidden lg:block w-72 border-r bg-background/50 overflow-y-auto h-[calc(100vh-5rem)] sticky top-20">
+                <aside className="hidden lg:block w-72 border-r bg-background/50 overflow-y-auto h-[calc(100vh-3rem)] sticky top-12">
                     <nav className="p-4">
                         <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-4 px-3">
                             Categories

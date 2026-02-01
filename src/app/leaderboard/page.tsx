@@ -8,18 +8,18 @@ import { ArrowLeft, Trophy } from 'lucide-react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 
-import { Header } from '@/components/Header'
+import { CompactNav } from '@/components/CompactNav'
 
 export default function LeaderboardPage() {
     return (
         <div className="min-h-screen relative overflow-hidden bg-background flex flex-col">
-            <Header />
+            <CompactNav />
 
             {/* Background Effects */}
             <div className="absolute top-0 left-1/4 w-[800px] h-[800px] bg-yellow-600/5 rounded-full blur-[160px] pointer-events-none opacity-50" />
             <div className="absolute bottom-[-10%] right-[10%] w-[600px] h-[600px] bg-orange-600/5 rounded-full blur-[140px] pointer-events-none opacity-30" />
 
-            <div className="max-w-7xl mx-auto px-6 pt-32 pb-8 relative z-10 flex-1 flex flex-col items-center justify-center">
+            <div className="max-w-7xl mx-auto px-6 pt-20 pb-8 relative z-10 flex-1 flex flex-col items-center justify-center">
 
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}

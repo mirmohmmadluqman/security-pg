@@ -23,7 +23,8 @@ import {
     PanelLeftClose,
     PanelLeftOpen,
     PanelBottomClose,
-    PanelBottomOpen
+    PanelBottomOpen,
+    Home
 } from 'lucide-react'
 import Link from 'next/link'
 import { getDVDChallengeBySlug } from '@/lib/dvd'
@@ -88,50 +89,19 @@ export default function DVDChallengePage() {
     }
 
     return (
-        <div className="h-screen flex flex-col bg-background overflow-hidden">
-            {/* Header */}
-            <header className="h-16 border-b border-border flex items-center justify-between px-6 shrink-0 glass z-50">
-                <div className="flex items-center gap-6">
-                    <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => router.back()}
-                        className="gap-2 text-muted-foreground hover:text-foreground"
-                    >
-                        <ArrowLeft size={16} />
-                        Back
-                    </Button>
-                    <div className="w-px h-6 bg-border" />
-                    <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-8 w-8 text-muted-foreground hover:text-foreground"
-                        onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                        title={isSidebarOpen ? "Close Sidebar (Ctrl+B)" : "Open Sidebar (Ctrl+B)"}
-                    >
-                        {isSidebarOpen ? <PanelLeftClose size={18} /> : <PanelLeftOpen size={18} />}
-                    </Button>
-                    <div className="flex items-center gap-3">
-                        <div className="p-1.5 rounded-lg bg-red-500/10 text-red-500">
-                            <Shield size={18} />
-                        </div>
-                        <h2 className="font-bold tracking-tight">{challenge.title}</h2>
-                    </div>
-                </div>
-                <div className="flex items-center gap-4">
-                    <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full bg-accent text-[10px] font-bold uppercase tracking-widest text-muted-foreground mr-4">
-                        <div className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
-                        Live Sandbox
-                    </div>
-                    <ThemeSelector />
-                </div>
-            </header>
-
+        <div className="h-screen flex flex-col bg-background overflow-hidden relative">
             <div className="flex-1 flex overflow-hidden">
                 {/* Left Pane: Scenario & Info (Scrollable) */}
-                {/* Left Pane: Scenario & Info (Scrollable) */}
                 {isSidebarOpen && (
-                    <aside className="w-[450px] border-r border-border flex flex-col shrink-0 bg-background/50 transition-all duration-300">
+                    <aside className="w-[400px] border-r border-border flex flex-col shrink-0 bg-background transition-all duration-300">
+                        <div className="h-14 border-b border-border flex items-center px-6 shrink-0 bg-accent/10">
+                            <div className="flex items-center gap-3">
+                                <div className="p-1 rounded-md bg-red-500/10 text-red-500">
+                                    <Shield size={16} />
+                                </div>
+                                <h2 className="font-bold text-sm tracking-tight truncate">{challenge.title}</h2>
+                            </div>
+                        </div>
                         <div className="flex-1 overflow-y-auto custom-scrollbar p-6">
                             <ScenarioPanel challenge={challenge} />
                         </div>
@@ -139,12 +109,45 @@ export default function DVDChallengePage() {
                 )}
 
                 {/* Main Pane: Code & Console (Split) */}
-                <main className="flex-1 flex flex-col min-w-0 bg-accent/5">
+                <main className="flex-1 flex flex-col min-w-0 bg-background">
                     {/* Top Section: Editor */}
                     <div className="flex-1 flex flex-col min-h-0 border-b border-border">
                         {/* Editor Header / Tab Switcher */}
-                        <div className="h-12 border-b border-border bg-background flex items-center justify-between px-4">
-                            <div className="flex items-center gap-1 overflow-x-auto no-scrollbar">
+                        <div className="h-14 border-b border-border bg-background flex items-center justify-between px-4 shrink-0">
+                            <div className="flex items-center gap-0 overflow-x-auto no-scrollbar">
+                                <Link href="/">
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        className="h-10 w-10 text-muted-foreground hover:text-foreground shrink-0 rounded-none mr-1"
+                                        title="Go Home"
+                                    >
+                                        <Home size={18} />
+                                    </Button>
+                                </Link>
+
+                                <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    onClick={() => router.back()}
+                                    className="h-10 w-10 text-muted-foreground hover:text-foreground shrink-0 rounded-none mr-2"
+                                    title="Go Back"
+                                >
+                                    <ArrowLeft size={18} />
+                                </Button>
+
+                                <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className={cn("h-10 w-10 text-muted-foreground hover:text-foreground shrink-0 rounded-none mr-4", isSidebarOpen && "text-primary bg-primary/5")}
+                                    onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                                    title={isSidebarOpen ? "Close Sidebar (Ctrl+B)" : "Open Sidebar (Ctrl+B)"}
+                                >
+                                    {isSidebarOpen ? <PanelLeftClose size={18} /> : <PanelLeftOpen size={18} />}
+                                </Button>
+
+                                <div className="h-6 w-px bg-border mr-2" />
+
                                 {challenge.contracts.map((contract, i) => (
                                     <button
                                         key={contract.name}
@@ -153,9 +156,9 @@ export default function DVDChallengePage() {
                                             setTab('contracts')
                                         }}
                                         className={cn(
-                                            "flex items-center gap-2 px-4 h-12 text-xs font-medium transition-all border-b-2",
+                                            "flex items-center gap-2 px-4 h-14 text-xs font-medium transition-all border-b-2 shrink-0",
                                             activeContractIndex === i && tab === 'contracts'
-                                                ? "border-primary text-primary bg-primary/5"
+                                                ? "border-primary text-primary bg-primary/5 shadow-inner"
                                                 : "border-transparent text-muted-foreground hover:bg-accent/50"
                                         )}
                                     >
@@ -166,9 +169,9 @@ export default function DVDChallengePage() {
                                 <button
                                     onClick={() => setTab('exploit')}
                                     className={cn(
-                                        "flex items-center gap-2 px-4 h-12 text-xs font-medium transition-all border-b-2",
+                                        "flex items-center gap-2 px-4 h-14 text-xs font-medium transition-all border-b-2 shrink-0",
                                         tab === 'exploit'
-                                            ? "border-red-500 text-red-500 bg-red-500/5"
+                                            ? "border-red-500 text-red-500 bg-red-500/5 shadow-inner"
                                             : "border-transparent text-muted-foreground hover:bg-accent/50"
                                     )}
                                 >
@@ -177,32 +180,38 @@ export default function DVDChallengePage() {
                                 </button>
                             </div>
 
-                            <div className="flex gap-2">
+                            <div className="flex items-center gap-2 shrink-0">
+                                <Button
+                                    size="sm"
+                                    className="h-9 px-4 rounded-none bg-red-600 hover:bg-red-700 gap-2 font-bold text-xs shadow-lg shadow-red-900/20"
+                                    onClick={handleRunExploit}
+                                    disabled={isRunning}
+                                >
+                                    <Play size={14} fill="currentColor" />
+                                    {isRunning ? 'RUNNING...' : 'RUN EXPLOIT'}
+                                </Button>
+
+                                <div className="h-6 w-px bg-border mx-1" />
+
+                                <ThemeSelector />
+
                                 <Button
                                     variant="ghost"
                                     size="icon"
-                                    className="h-8 w-8 text-muted-foreground hover:text-foreground transition-colors"
+                                    className="h-9 w-9 text-muted-foreground hover:text-foreground transition-colors rounded-none"
                                     onClick={() => setIsTerminalOpen(!isTerminalOpen)}
                                     title={isTerminalOpen ? "Close Terminal (Ctrl+J)" : "Open Terminal (Ctrl+J)"}
                                 >
                                     {isTerminalOpen ? <PanelBottomClose size={18} /> : <PanelBottomOpen size={18} />}
                                 </Button>
                                 <Button
-                                    size="sm"
-                                    className="h-8 rounded-full bg-red-600 hover:bg-red-700 gap-2"
-                                    onClick={handleRunExploit}
-                                    disabled={isRunning}
-                                >
-                                    <Play size={14} fill="currentColor" />
-                                    {isRunning ? 'Hacking...' : 'Run Exploit'}
-                                </Button>
-                                <Button
-                                    variant="outline"
+                                    variant="ghost"
                                     size="icon"
-                                    className="h-8 w-8 rounded-full"
+                                    className="h-9 w-9 rounded-none text-muted-foreground hover:text-foreground"
                                     onClick={handleReset}
+                                    title="Reset Environment"
                                 >
-                                    <RotateCcw size={14} />
+                                    <RotateCcw size={16} />
                                 </Button>
                             </div>
                         </div>
@@ -226,9 +235,14 @@ export default function DVDChallengePage() {
                     {/* Bottom Section: Console */}
                     {isTerminalOpen && (
                         <div className="h-[250px] flex flex-col bg-background border-t border-border transition-all duration-300">
-                            <div className="h-10 px-4 flex items-center gap-2 border-b border-border shrink-0 bg-muted/30">
-                                <Terminal size={14} className="text-muted-foreground/60" />
-                                <span className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground/60">DVVM Terminal v4.1</span>
+                            <div className="h-10 px-4 flex items-center justify-between border-b border-border shrink-0 bg-muted/30">
+                                <div className="flex items-center gap-2">
+                                    <Terminal size={14} className="text-muted-foreground/60" />
+                                    <span className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground/60">DVVM Terminal v4.1</span>
+                                </div>
+                                <div className="flex items-center gap-2 px-2 py-0.5 rounded-none bg-red-500/10 text-[9px] font-bold text-red-500 uppercase tracking-tighter border border-red-500/20">
+                                    Live Session
+                                </div>
                             </div>
                             <div className="flex-1 overflow-hidden">
                                 <VMConsole logs={logs} isRunning={isRunning} />

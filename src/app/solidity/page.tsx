@@ -29,7 +29,7 @@ const CATEGORY_GRADIENTS: Record<string, string> = {
     defi: 'from-indigo-500/20 to-violet-500/20',
 }
 
-import { Header } from '@/components/Header'
+import { CompactNav } from '@/components/CompactNav'
 import { Footer } from '@/components/Footer'
 
 export default function SolidityPage() {
@@ -37,14 +37,14 @@ export default function SolidityPage() {
 
     return (
         <div className="min-h-screen bg-background relative overflow-hidden flex flex-col">
-            <Header />
+            <CompactNav />
 
             {/* Background Effects */}
             <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-purple-600/10 rounded-none blur-[160px] pointer-events-none opacity-50" />
             <div className="absolute bottom-[-10%] left-[-10%] w-[600px] h-[600px] bg-cyan-600/5 rounded-none blur-[140px] pointer-events-none opacity-30" />
 
             {/* Main Content */}
-            <main className="flex-1 container mx-auto px-6 pt-32 pb-12 relative z-10">
+            <main className="flex-1 container mx-auto px-6 pt-20 pb-12 relative z-10">
                 {/* Hero Section */}
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}

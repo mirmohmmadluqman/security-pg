@@ -12,15 +12,15 @@ interface ScenarioPanelProps {
 
 export function ScenarioPanel({ challenge }: ScenarioPanelProps) {
     return (
-        <div className="space-y-8 pb-12">
+        <div className="space-y-6 pb-12">
             {/* Mission Story */}
-            <div className="space-y-4">
-                <div className="flex items-center gap-2 text-primary font-bold uppercase tracking-widest text-xs">
-                    <Info size={14} />
+            <div className="space-y-3">
+                <div className="flex items-center gap-2 text-primary/80 font-bold uppercase tracking-widest text-[10px]">
+                    <Info size={12} />
                     <span>Background Scenario</span>
                 </div>
                 <div className="prose prose-invert prose-sm max-w-none">
-                    <p className="text-muted-foreground leading-relaxed text-lg whitespace-pre-wrap">
+                    <p className="text-muted-foreground leading-relaxed text-sm whitespace-pre-wrap">
                         {challenge.scenario}
                     </p>
                 </div>
@@ -30,29 +30,29 @@ export function ScenarioPanel({ challenge }: ScenarioPanelProps) {
             <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="glass p-6 rounded-2xl border-primary/20 bg-primary/5"
+                className="p-4 rounded-none border border-primary/20 bg-primary/5"
             >
-                <div className="flex items-center gap-3 mb-4">
-                    <div className="p-2 rounded-lg bg-primary/20 text-primary">
-                        <Target size={20} />
+                <div className="flex items-center gap-2 mb-2">
+                    <div className="p-1.5 rounded-none bg-primary/20 text-primary">
+                        <Target size={16} />
                     </div>
-                    <h3 className="text-xl font-bold">Mission Objective</h3>
+                    <h3 className="text-base font-bold uppercase tracking-tight">Mission Objective</h3>
                 </div>
-                <p className="text-foreground/90 font-medium">
+                <p className="text-foreground/90 font-medium text-sm">
                     {challenge.objective}
                 </p>
             </motion.div>
 
             {/* Rules of Engagement */}
-            <div className="space-y-4">
-                <div className="flex items-center gap-2 text-red-500 font-bold uppercase tracking-widest text-xs">
-                    <Shield size={14} />
+            <div className="space-y-3">
+                <div className="flex items-center gap-2 text-red-500/80 font-bold uppercase tracking-widest text-[10px]">
+                    <Shield size={12} />
                     <span>Rules of Engagement</span>
                 </div>
-                <div className="space-y-3">
+                <div className="space-y-2">
                     {challenge.rules.map((rule, i) => (
-                        <div key={i} className="flex gap-3 text-sm text-muted-foreground group">
-                            <CheckCircle2 size={16} className="text-primary/40 group-hover:text-primary shrink-0 transition-colors" />
+                        <div key={i} className="flex gap-2 text-xs text-muted-foreground group">
+                            <CheckCircle2 size={14} className="text-primary/40 group-hover:text-primary shrink-0 transition-colors" />
                             <span>{rule}</span>
                         </div>
                     ))}

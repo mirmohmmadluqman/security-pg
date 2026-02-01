@@ -12,20 +12,20 @@ import Link from 'next/link'
 
 import { useWallet } from '@/context/WalletContext'
 
-import { Header } from '@/components/Header'
+import { CompactNav } from '@/components/CompactNav'
 
 export default function ChallengesClient() {
     const { completedModules } = useWallet()
 
     return (
         <div className="min-h-screen relative overflow-hidden bg-[#0b0e14] flex flex-col">
-            <Header />
+            <CompactNav />
 
             {/* Background Gradients */}
             <div className="absolute top-0 left-1/4 w-[800px] h-[800px] bg-purple-600/5 rounded-full blur-[160px] pointer-events-none opacity-50" />
             <div className="absolute bottom-[-10%] right-[10%] w-[600px] h-[600px] bg-[#00ffff]/5 rounded-full blur-[140px] pointer-events-none opacity-30" />
 
-            <div className="max-w-7xl mx-auto px-6 pt-32 pb-8 relative z-10 flex-1">
+            <div className="max-w-7xl mx-auto px-6 pt-20 pb-8 relative z-10 flex-1">
 
                 {/* Active Challenges Section */}
                 <motion.div

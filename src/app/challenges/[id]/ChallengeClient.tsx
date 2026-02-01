@@ -38,8 +38,7 @@ import { useTheme } from 'next-themes'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { Panel, PanelGroup, PanelResizeHandle, ImperativePanelHandle } from 'react-resizable-panels'
-import { cn } from '@/lib/utils'
-
+import { CompactNav } from '@/components/CompactNav'
 import { useWallet } from '@/context/WalletContext'
 
 export type IDEStatus = 'idle' | 'compiling' | 'deploying' | 'executing' | 'success' | 'error'
@@ -320,32 +319,21 @@ export default function ChallengeClient({ challengeId }: { challengeId: string }
                 </div>
             )}
 
-            {/* Header */}
+            {/* Compact Header */}
             {showTopBar && (
-                <header className="h-14 glass border-b flex items-center justify-between px-4 sticky top-0 z-50 shrink-0 select-none animate-in slide-in-from-top duration-300">
-                    <div className="flex items-center gap-4">
-                        <Link href="/challenges">
-                            <Button
-                                variant="ghost"
-                                size="sm"
-                                className="gap-2 h-9 px-3 hover:bg-accent text-muted-foreground hover:text-foreground transition-colors"
-                            >
-                                <ArrowLeft className="w-4 h-4" />
-                                <span className="hidden md:inline">Back</span>
-                            </Button>
-                        </Link>
-                        <div className="h-6 w-px bg-border hidden md:block" />
-                        <h1 className="text-sm md:text-base font-bold text-primary uppercase tracking-widest truncate max-w-[200px] md:max-w-md">
+                <CompactNav backHref="/challenges" backLabel="Challenges" showTheme={false}>
+                    <div className="flex items-center gap-2">
+                        <h1 className="text-xs font-bold text-primary uppercase tracking-widest truncate max-w-[150px] md:max-w-md hidden md:block">
                             {selectedModule.title}
                         </h1>
-                    </div>
 
-                    <div className="flex items-center gap-2">
+                        <div className="h-6 w-px bg-border mx-2 hidden md:block" />
+
                         {/* View Controls */}
                         <Button
                             variant="ghost"
                             size="icon"
-                            className={cn("h-8 w-8 text-muted-foreground hover:text-foreground hidden md:flex", leftBlocked && "text-primary bg-primary/10")}
+                            className={cn("h-8 w-8 text-muted-foreground hover:text-foreground", leftBlocked && "text-primary bg-primary/10")}
                             onClick={toggleLeftPanel}
                             title="Toggle Sidebar (Ctrl+1)"
                         >
@@ -355,22 +343,14 @@ export default function ChallengeClient({ challengeId }: { challengeId: string }
                         <Button
                             variant="ghost"
                             size="icon"
-                            className={cn("h-8 w-8 text-muted-foreground hover:text-foreground hidden md:flex", rightBlocked && "text-primary bg-primary/10")}
+                            className={cn("h-8 w-8 text-muted-foreground hover:text-foreground", rightBlocked && "text-primary bg-primary/10")}
                             onClick={toggleRightPanel}
                             title="Toggle Terminal (Ctrl+`)"
                         >
                             <PanelRight className="w-4 h-4" />
                         </Button>
 
-                        <div className="hidden md:flex px-3 py-1 rounded-none bg-primary/10 border border-primary/20 text-[10px] font-mono text-primary items-center gap-2">
-                            <span className="relative flex h-1.5 w-1.5">
-                                <span className="animate-ping absolute inline-flex h-full w-full rounded-none bg-primary opacity-75"></span>
-                                <span className="relative inline-flex rounded-none h-1.5 w-1.5 bg-primary"></span>
-                            </span>
-                            EVM Ready
-                        </div>
-
-                        <div className="h-6 w-px bg-border mx-2" />
+                        <div className="h-6 w-px bg-border mx-2 hidden md:block" />
 
                         <ConnectButton />
 
@@ -381,16 +361,16 @@ export default function ChallengeClient({ challengeId }: { challengeId: string }
                                     <Settings className="w-4 h-4 transition-transform hover:rotate-45 duration-500" />
                                 </Button>
                             </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end" className="w-64 bg-popover border-border text-foreground">
-                                <DropdownMenuLabel>Workshop Settings</DropdownMenuLabel>
+                            <DropdownMenuContent align="end" className="w-64 bg-popover border-border text-foreground rounded-none shadow-2xl">
+                                <DropdownMenuLabel className="text-[10px] uppercase tracking-widest text-muted-foreground">Workshop Settings</DropdownMenuLabel>
                                 <DropdownMenuSeparator className="bg-border" />
 
                                 <DropdownMenuSub>
-                                    <DropdownMenuSubTrigger>
+                                    <DropdownMenuSubTrigger className="text-sm">
                                         <Palette className="w-4 h-4 mr-2" />
                                         <span>Theme</span>
                                     </DropdownMenuSubTrigger>
-                                    <DropdownMenuSubContent className="bg-popover border-border">
+                                    <DropdownMenuSubContent className="bg-popover border-border rounded-none">
                                         {[
                                             { name: "dark", label: "Dark" },
                                             { name: "light", label: "Light" },
@@ -400,7 +380,7 @@ export default function ChallengeClient({ challengeId }: { challengeId: string }
                                             { name: "neobrutalism", label: "Neo-Brutalism" },
                                             { name: "enterprise", label: "Enterprise" },
                                         ].map((t) => (
-                                            <DropdownMenuItem key={t.name} onClick={() => setTheme(t.name)}>
+                                            <DropdownMenuItem key={t.name} onClick={() => setTheme(t.name)} className="text-sm">
                                                 {t.label}
                                             </DropdownMenuItem>
                                         ))}
@@ -408,27 +388,27 @@ export default function ChallengeClient({ challengeId }: { challengeId: string }
                                 </DropdownMenuSub>
 
                                 <DropdownMenuSub>
-                                    <DropdownMenuSubTrigger>
+                                    <DropdownMenuSubTrigger className="text-sm">
                                         <Layout className="w-4 h-4 mr-2" />
                                         <span>View</span>
                                     </DropdownMenuSubTrigger>
-                                    <DropdownMenuSubContent className="bg-popover border-border">
-                                        <DropdownMenuItem onClick={toggleLeftPanel}>
+                                    <DropdownMenuSubContent className="bg-popover border-border rounded-none">
+                                        <DropdownMenuItem onClick={toggleLeftPanel} className="text-sm">
                                             <Sidebar className="w-4 h-4 mr-2" />
                                             <span>Toggle Sidebar</span>
                                             <span className="ml-auto text-[10px] opacity-50">Ctrl+1</span>
                                         </DropdownMenuItem>
-                                        <DropdownMenuItem onClick={() => setShowTopBar(false)}>
+                                        <DropdownMenuItem onClick={() => setShowTopBar(false)} className="text-sm">
                                             <Layout className="w-4 h-4 mr-2" />
                                             <span>Toggle Top Bar</span>
                                             <span className="ml-auto text-[10px] opacity-50">Ctrl+2</span>
                                         </DropdownMenuItem>
-                                        <DropdownMenuItem onClick={toggleBottomPanel}>
+                                        <DropdownMenuItem onClick={toggleBottomPanel} className="text-sm">
                                             <Monitor className="w-4 h-4 mr-2" />
                                             <span>Toggle Bottom Bar</span>
                                             <span className="ml-auto text-[10px] opacity-50">Ctrl+3</span>
                                         </DropdownMenuItem>
-                                        <DropdownMenuItem onClick={toggleRightPanel}>
+                                        <DropdownMenuItem onClick={toggleRightPanel} className="text-sm">
                                             <PanelRight className="w-4 h-4 mr-2" />
                                             <span>Toggle Terminal</span>
                                             <span className="ml-auto text-[10px] opacity-50">Ctrl+`</span>
@@ -438,7 +418,7 @@ export default function ChallengeClient({ challengeId }: { challengeId: string }
                             </DropdownMenuContent>
                         </DropdownMenu>
                     </div>
-                </header>
+                </CompactNav>
             )}
 
             {/* Main Content - Resizable Layout */}

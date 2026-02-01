@@ -11,7 +11,7 @@ import { Button } from '@/components/ui/button'
 import { getLessonBySlug, getPrevNextLessons, getRemixUrl, getRemixLiteUrl, getAllCategories, getLessonsByCategory } from '@/lib/solidity'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism'
-import { Header } from '@/components/Header'
+import { CompactNav } from '@/components/CompactNav'
 import { Footer } from '@/components/Footer'
 import { ArrowLeft, ChevronLeft, ChevronRight, Copy, Check, MessageCircle, Bug, BookOpen, Code2, Shield, Cpu, TestTube, Hammer, Coins, Menu, X } from 'lucide-react'
 import ReactMarkdown from 'react-markdown'
@@ -140,31 +140,27 @@ export default function LessonPage() {
             {/* Background Effects */}
             <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-purple-600/10 rounded-none blur-[120px] pointer-events-none" />
 
-            {/* Header */}
-            <header className="h-16 border-b flex items-center justify-between px-4 md:px-6 relative z-50 glass sticky top-0 bg-background/80 backdrop-blur-md">
-                <div className="flex items-center gap-3">
-                    {/* Sidebar Toggle Button */}
+            {/* Compact Header */}
+            <CompactNav
+                backHref={`/solidity/${categorySlug}`}
+                backLabel={lesson.category}
+                showTheme={true}
+            >
+                <div className="flex items-center gap-2">
                     <button
                         onClick={() => setSidebarOpen(!sidebarOpen)}
-                        className="p-2 rounded-none hover:bg-primary/10 text-primary transition-colors border border-transparent hover:border-primary/20"
+                        className="p-1 px-2 rounded-none hover:bg-primary/10 text-primary transition-colors border border-transparent hover:border-primary/20 flex items-center gap-2"
                         aria-label="Toggle sidebar"
                     >
-                        {sidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+                        {sidebarOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
+                        <span className="text-[10px] font-bold uppercase tracking-widest hidden sm:inline">Menu</span>
                     </button>
-                    <Link href={`/solidity/${categorySlug}`}>
-                        <Button variant="ghost" size="sm" className={cn(
-                            "gap-2 text-muted-foreground",
-                            isDark ? "hover:text-white" : "hover:text-foreground"
-                        )}>
-                            <ArrowLeft className="w-4 h-4" />
-                            <span className="hidden sm:inline">{lesson.category}</span>
-                        </Button>
-                    </Link>
-                    <div className="hidden md:block w-px h-6 bg-border" />
-                    <Logo />
+                    <div className="w-px h-6 bg-border mx-1 hidden md:block" />
+                    <h1 className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest hidden md:block">
+                        {lesson.title}
+                    </h1>
                 </div>
-                <ThemeSelector />
-            </header>
+            </CompactNav>
 
             <div className="flex-1 flex">
                 {/* Sidebar - toggleable */}
