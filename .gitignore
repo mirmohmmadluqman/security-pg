@@ -1,9 +1,15 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
+# Foundry
+security-pg-core-contracts/.env
+security-pg-core-contracts/out/
+security-pg-core-contracts/cache/
+security-pg-core-contracts/lib/
+
 # dependencies
-node_modules
+/node_modules
 /.pnp
-.pnp.*
+.pnp.js
 .yarn/*
 !.yarn/patches
 !.yarn/plugins
@@ -51,3 +57,7 @@ server.log
 # Data/Docs only needed to make it
 /exploits
 /Integrations_
+
+# Folders // because there will be seperate repository for that
+security-pg-core-contracts/
+Wallet-Integration/

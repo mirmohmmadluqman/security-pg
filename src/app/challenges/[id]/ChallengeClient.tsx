@@ -8,6 +8,7 @@ import { InfoPanel } from '@/components/InfoPanel'
 import { ActionButtons } from '@/components/ActionButtons'
 import { VMConsole } from '@/components/VMConsole'
 import { Button } from '@/components/ui/button'
+import { ConnectButton } from '@/components/ConnectButton'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
     ArrowLeft,
@@ -39,6 +40,8 @@ import { notFound } from 'next/navigation'
 import { Panel, PanelGroup, PanelResizeHandle, ImperativePanelHandle } from 'react-resizable-panels'
 import { cn } from '@/lib/utils'
 
+import { useWallet } from '@/context/WalletContext'
+
 export type IDEStatus = 'idle' | 'compiling' | 'deploying' | 'executing' | 'success' | 'error'
 
 export default function ChallengeClient({ challengeId }: { challengeId: string }) {
@@ -49,13 +52,14 @@ export default function ChallengeClient({ challengeId }: { challengeId: string }
     const [code, setCode] = useState('')
     const [logs, setLogs] = useState<string[]>([])
     const { theme, setTheme, resolvedTheme } = useTheme()
+    const { completedModules, completeModule } = useWallet()
     const [mounted, setMounted] = useState(false)
 
     useEffect(() => {
         setMounted(true)
     }, [])
 
-    const isDarkMode = mounted && (resolvedTheme === 'dark' || theme === 'dark')
+    const isDarkMode = mounted && (resolvedTheme === 'dark' || (theme !== 'light' && theme !== 'minimalist-light' && theme !== 'neobrutalism' && theme !== 'enterprise'))
 
     // Panel Refs for Layout Control
     const leftPanelRef = useRef<ImperativePanelHandle>(null)
@@ -230,6 +234,7 @@ export default function ChallengeClient({ challengeId }: { challengeId: string }
                 ])
             } else {
                 setStatus('success')
+                completeModule(selectedModule.id)
                 setLogs(prev => [
                     ...prev,
                     '🛡️ Verifying remediation...',
@@ -286,7 +291,7 @@ export default function ChallengeClient({ challengeId }: { challengeId: string }
                 <div className="absolute top-4 right-4 z-[100] animate-in fade-in zoom-in duration-300">
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                            <Button variant="outline" size="icon" className="h-10 w-10 bg-background/50 backdrop-blur-md border-primary/20 hover:border-primary transition-all rounded-full">
+                            <Button variant="outline" size="icon" className="h-10 w-10 bg-background/50 backdrop-blur-md border-primary/20 hover:border-primary transition-all rounded-none">
                                 <Settings className="w-5 h-5 text-primary" />
                             </Button>
                         </DropdownMenuTrigger>
@@ -305,8 +310,8 @@ export default function ChallengeClient({ challengeId }: { challengeId: string }
                                     <span>Theme</span>
                                 </DropdownMenuSubTrigger>
                                 <DropdownMenuSubContent className="bg-popover border-border">
-                                    {["dark", "light", "cyberpunk", "minimalist"].map((t) => (
-                                        <DropdownMenuItem key={t} onClick={() => setTheme(t)}>{t}</DropdownMenuItem>
+                                    {["dark", "light", "cyberpunk", "minimalist-dark", "glass", "neobrutalism", "enterprise"].map((t) => (
+                                        <DropdownMenuItem key={t} onClick={() => setTheme(t)} className="capitalize">{t.replace('-', ' ')}</DropdownMenuItem>
                                     ))}
                                 </DropdownMenuSubContent>
                             </DropdownMenuSub>
@@ -330,7 +335,7 @@ export default function ChallengeClient({ challengeId }: { challengeId: string }
                             </Button>
                         </Link>
                         <div className="h-6 w-px bg-border hidden md:block" />
-                        <h1 className="text-sm md:text-base font-bold text-foreground truncate max-w-[200px] md:max-w-md">
+                        <h1 className="text-sm md:text-base font-bold text-primary uppercase tracking-widest truncate max-w-[200px] md:max-w-md">
                             {selectedModule.title}
                         </h1>
                     </div>
@@ -357,15 +362,17 @@ export default function ChallengeClient({ challengeId }: { challengeId: string }
                             <PanelRight className="w-4 h-4" />
                         </Button>
 
-                        <div className="h-6 w-px bg-border mx-2" />
-
-                        <div className="hidden md:flex px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-[10px] font-mono text-primary items-center gap-2">
+                        <div className="hidden md:flex px-3 py-1 rounded-none bg-primary/10 border border-primary/20 text-[10px] font-mono text-primary items-center gap-2">
                             <span className="relative flex h-1.5 w-1.5">
-                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-                                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-primary"></span>
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-none bg-primary opacity-75"></span>
+                                <span className="relative inline-flex rounded-none h-1.5 w-1.5 bg-primary"></span>
                             </span>
                             EVM Ready
                         </div>
+
+                        <div className="h-6 w-px bg-border mx-2" />
+
+                        <ConnectButton />
 
                         {/* Settings Menu */}
                         <DropdownMenu>
@@ -388,7 +395,10 @@ export default function ChallengeClient({ challengeId }: { challengeId: string }
                                             { name: "dark", label: "Dark" },
                                             { name: "light", label: "Light" },
                                             { name: "cyberpunk", label: "Cyberpunk" },
-                                            { name: "minimalist", label: "Minimalist" },
+                                            { name: "minimalist-dark", label: "Minimalist" },
+                                            { name: "glass", label: "Glassmorphism" },
+                                            { name: "neobrutalism", label: "Neo-Brutalism" },
+                                            { name: "enterprise", label: "Enterprise" },
                                         ].map((t) => (
                                             <DropdownMenuItem key={t.name} onClick={() => setTheme(t.name)}>
                                                 {t.label}
@@ -462,15 +472,15 @@ export default function ChallengeClient({ challengeId }: { challengeId: string }
                                     <Tabs value={activeTab} onValueChange={handleTabChange} className="flex-1 flex flex-col overflow-hidden">
                                         <div className="border-b border-border bg-accent/20 px-4 shrink-0 flex items-center justify-between">
                                             <TabsList className="bg-transparent justify-start h-12 gap-2">
-                                                <TabsTrigger value="vulnerable" className="data-[state=active]:bg-primary/20 data-[state=active]:text-primary border border-transparent data-[state=active]:border-primary/20 text-xs md:text-sm">
+                                                <TabsTrigger value="vulnerable" className="data-[state=active]:bg-primary/10 data-[state=active]:text-primary border border-transparent data-[state=active]:border-primary/20 text-xs md:text-sm uppercase font-mono tracking-widest rounded-none">
                                                     <Bug className="w-3.5 h-3.5 mr-2" />
                                                     Vulnerability
                                                 </TabsTrigger>
-                                                <TabsTrigger value="attack" className="data-[state=active]:bg-red-500/20 data-[state=active]:text-red-400 border border-transparent data-[state=active]:border-red-500/20 text-xs md:text-sm">
+                                                <TabsTrigger value="attack" className="data-[state=active]:bg-red-500/10 data-[state=active]:text-red-400 border border-transparent data-[state=active]:border-red-500/20 text-xs md:text-sm uppercase font-mono tracking-widest rounded-none">
                                                     <Code className="w-3.5 h-3.5 mr-2" />
                                                     Exploit
                                                 </TabsTrigger>
-                                                <TabsTrigger value="fixed" className="data-[state=active]:bg-green-500/20 data-[state=active]:text-green-400 border border-transparent data-[state=active]:border-green-500/20 text-xs md:text-sm">
+                                                <TabsTrigger value="fixed" className="data-[state=active]:bg-green-500/10 data-[state=active]:text-green-400 border border-transparent data-[state=active]:border-green-500/20 text-xs md:text-sm uppercase font-mono tracking-widest rounded-none">
                                                     <Shield className="w-3.5 h-3.5 mr-2" />
                                                     Patched
                                                 </TabsTrigger>
@@ -494,7 +504,7 @@ export default function ChallengeClient({ challengeId }: { challengeId: string }
                             </Panel>
 
                             <PanelResizeHandle className={cn("h-1 bg-border/50 hover:bg-primary/50 transition-colors cursor-row-resize active:bg-primary/80 flex justify-center items-center group", bottomBlocked && "hidden")}>
-                                <div className="h-0.5 w-8 bg-foreground/20 rounded-full group-hover:bg-foreground/50" />
+                                <div className="h-0.5 w-8 bg-foreground/20 rounded-none group-hover:bg-foreground/50" />
                             </PanelResizeHandle>
 
                             {/* Action Buttons (Bottom adjustable panel) */}

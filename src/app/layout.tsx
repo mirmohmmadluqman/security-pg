@@ -7,6 +7,8 @@ import { LegalGate } from "@/components/LegalGate";
 import { ImageZoomProvider } from "@/components/ImageZoom";
 import { MotionProvider } from "@/components/MotionProvider";
 
+import { WalletProvider } from "@/context/WalletContext";
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -66,11 +68,13 @@ export default function RootLayout({
           themes={["dark", "light", "cyberpunk", "minimalist-light", "minimalist-dark", "glass", "neobrutalism", "enterprise"]}
         >
           <ImageZoomProvider>
-            <MotionProvider>
-              {children}
-            </MotionProvider>
-            <LegalGate />
-            <Toaster />
+            <WalletProvider>
+              <MotionProvider>
+                {children}
+              </MotionProvider>
+              <LegalGate />
+              <Toaster />
+            </WalletProvider>
           </ImageZoomProvider>
         </ThemeProvider>
       </body>

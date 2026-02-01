@@ -70,7 +70,7 @@ export default function DVDChallengePage() {
         notFound()
     }
 
-    const isDark = mounted && (resolvedTheme === 'dark' || theme === 'dark')
+    const isDark = mounted && (resolvedTheme === 'dark' || (theme !== 'light' && theme !== 'minimalist-light' && theme !== 'neobrutalism' && theme !== 'enterprise'))
     const activeContract = challenge.contracts[activeContractIndex]
 
     const handleRunExploit = () => {

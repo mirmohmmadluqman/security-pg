@@ -4,41 +4,28 @@ import React from 'react'
 import { getAllVulnerabilities } from '@/lib/library'
 import { Logo } from '@/components/Logo'
 import { ThemeSelector } from '@/components/ThemeSelector'
+import { ConnectButton } from '@/components/ConnectButton'
 import { Button } from '@/components/ui/button'
 import { ArrowLeft, BookOpen, Shield, Lock, ExternalLink } from 'lucide-react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
 
+import { Header } from '@/components/Header'
+import { Footer } from '@/components/Footer'
+
 export default function LibraryPage() {
     const vulnerabilities = getAllVulnerabilities()
 
     return (
-        <div className="min-h-screen relative overflow-hidden bg-background">
-            {/* Background Effects */}
-            <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-600/10 rounded-full blur-[128px] pointer-events-none" />
-            <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-purple-600/10 rounded-full blur-[128px] pointer-events-none" />
+        <div className="min-h-screen relative overflow-hidden bg-background flex flex-col">
+            <Header />
 
-            <div className="max-w-7xl mx-auto px-6 py-8 relative z-10">
-                <header className="flex justify-between items-center mb-12">
-                    <div className="flex items-center gap-4">
-                        <Link href="/">
-                            <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground">
-                                <ArrowLeft className="h-5 w-5" />
-                            </Button>
-                        </Link>
-                        <Logo />
-                        <nav className="hidden md:flex items-center gap-6 ml-8">
-                            <Link href="/challenges" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
-                                Challenges
-                            </Link>
-                            <Link href="/library" className="text-sm font-medium text-primary">
-                                Library
-                            </Link>
-                        </nav>
-                    </div>
-                    <ThemeSelector />
-                </header>
+            {/* Background Effects */}
+            <div className="absolute top-0 left-1/4 w-[800px] h-[800px] bg-purple-600/10 rounded-none blur-[160px] pointer-events-none opacity-50" />
+            <div className="absolute bottom-[-10%] right-[10%] w-[600px] h-[600px] bg-cyan-600/5 rounded-none blur-[140px] pointer-events-none opacity-30" />
+
+            <div className="max-w-7xl mx-auto px-6 pt-32 pb-8 relative z-10 flex-1">
 
                 {/* Hero Section */}
                 <motion.div
@@ -47,12 +34,12 @@ export default function LibraryPage() {
                     transition={{ duration: 0.5 }}
                     className="mb-12 text-center md:text-left"
                 >
-                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 text-blue-400 text-xs font-semibold uppercase tracking-wider mb-4 border border-blue-500/20">
+                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-none bg-primary/10 text-primary text-xs font-semibold uppercase tracking-wider mb-4 border border-primary/20">
                         <BookOpen className="w-4 h-4" />
                         Knowledge Base
                     </div>
-                    <h1 className="text-4xl md:text-5xl font-bold mb-4">
-                        Vulnerability <span className="text-gradient text-blue-500">Library</span>
+                    <h1 className="text-4xl md:text-5xl font-bold mb-4 uppercase">
+                        Vulnerability <span className="text-primary drop-shadow-[0_0_15px_rgba(168,85,247,0.4)]">Library</span>
                     </h1>
                     <p className="text-lg text-muted-foreground max-w-2xl">
                         A curated collection of real-world smart contract vulnerabilities.
@@ -70,15 +57,15 @@ export default function LibraryPage() {
                 >
                     {vulnerabilities.map((vuln, index) => (
                         <Link key={vuln.id} href={`/library/${vuln.slug}`} className="group">
-                            <div className="h-full p-6 rounded-2xl border border-white/5 bg-white/5 backdrop-blur-sm hover:border-primary/50 hover:bg-white/10 transition-all duration-300 flex flex-col">
+                            <div className="h-full p-6 rounded-none border border-border bg-card shadow-sm hover:border-primary/50 hover:bg-accent/5 transition-all duration-300 flex flex-col">
                                 <div className="flex items-start justify-between mb-4">
-                                    <div className="p-3 rounded-xl bg-blue-500/10 text-blue-400 group-hover:scale-110 transition-transform duration-300">
+                                    <div className="p-3 rounded-none bg-primary/10 text-primary group-hover:scale-110 transition-transform duration-300 border border-primary/20">
                                         <Shield className="w-6 h-6" />
                                     </div>
                                     <ExternalLink className="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
                                 </div>
 
-                                <h3 className="text-xl font-bold mb-2 group-hover:text-primary transition-colors line-clamp-2">
+                                <h3 className="text-xl font-bold mb-2 group-hover:text-primary transition-colors line-clamp-2 tracking-tight">
                                     {vuln.title}
                                 </h3>
 
@@ -86,7 +73,7 @@ export default function LibraryPage() {
                                     {vuln.description}
                                 </p>
 
-                                <div className="mt-auto pt-4 border-t border-white/5 flex items-center justify-between text-xs text-muted-foreground">
+                                <div className="mt-auto pt-4 border-t border-border flex items-center justify-between text-xs text-muted-foreground">
                                     <span className="flex items-center gap-1">
                                         <Lock className="w-3 h-3" />
                                         Read-Only
@@ -100,6 +87,7 @@ export default function LibraryPage() {
                     ))}
                 </motion.div>
             </div>
+            <Footer />
         </div>
     )
 }

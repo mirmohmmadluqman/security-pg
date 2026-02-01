@@ -18,11 +18,10 @@ interface CodeEditorProps {
 export function CodeEditor({ code, language, isDarkMode, readOnly = false, onChange }: CodeEditorProps) {
   const [isEditorReady, setIsEditorReady] = useState(false)
   const editorRef = useRef<any>(null)
+  const monacoRef = useRef<any>(null)
 
-  const handleEditorDidMount = (editor: any, monaco: any) => {
-    editorRef.current = editor
-    setIsEditorReady(true)
-
+  const handleEditorWillMount = (monaco: any) => {
+    monacoRef.current = monaco
     // Register Solidity
     if (!monaco.languages.getLanguages().some((l: any) => l.id === 'solidity')) {
       monaco.languages.register({ id: 'solidity' })
@@ -71,6 +70,7 @@ export function CodeEditor({ code, language, isDarkMode, readOnly = false, onCha
         'editor.lineHighlightBackground': '#ffffff0a',
         'editorCursor.foreground': '#a78bfa',
         'editorIndentGuide.background': '#ffffff1a',
+        'editor.activeIndentGuide.background': '#ffffff33',
         'editor.selectionBackground': '#a78bfa33',
         'scrollbarSlider.background': '#ffffff1a',
         'scrollbarSlider.hoverBackground': '#ffffff33',
@@ -94,11 +94,12 @@ export function CodeEditor({ code, language, isDarkMode, readOnly = false, onCha
         { token: 'delimiter', foreground: '475569' }, // Slate-600
       ],
       colors: {
-        'editor.background': '#ffffff', // Explicit white for light mode
+        'editor.background': '#ffffff',
         'editor.foreground': '#0f172a',
         'editor.lineHighlightBackground': '#0000000a',
         'editorCursor.foreground': '#7c3aed',
         'editorIndentGuide.background': '#0000001a',
+        'editor.activeIndentGuide.background': '#00000033',
         'editor.selectionBackground': '#7c3aed33',
         'scrollbarSlider.background': '#0000001a',
         'scrollbarSlider.hoverBackground': '#00000033',
@@ -106,28 +107,28 @@ export function CodeEditor({ code, language, isDarkMode, readOnly = false, onCha
         'widget.shadow': '#00000000',
       }
     })
+  }
 
-    monaco.editor.setTheme(isDarkMode ? 'web3-dark' : 'web3-light')
+  const handleEditorDidMount = (editor: any) => {
+    editorRef.current = editor
+    setIsEditorReady(true)
   }
 
   // Update theme when prop changes
   useEffect(() => {
-    if (editorRef.current) {
-      const monaco = (window as any).monaco
-      if (monaco) {
-        monaco.editor.setTheme(isDarkMode ? 'web3-dark' : 'web3-light')
-      }
+    if (monacoRef.current) {
+      monacoRef.current.editor.setTheme(isDarkMode ? 'web3-dark' : 'web3-light')
     }
   }, [isDarkMode])
 
   return (
-    <div className="h-full relative font-mono text-sm">
+    <div className="h-full relative font-mono text-sm overflow-hidden border border-border">
       {!isEditorReady && (
-        <div className="absolute inset-0 p-4 space-y-2">
-          <Skeleton className="h-4 w-3/4 bg-white/5" />
-          <Skeleton className="h-4 w-1/2 bg-white/5" />
-          <Skeleton className="h-4 w-full bg-white/5" />
-          <Skeleton className="h-4 w-2/3 bg-white/5" />
+        <div className="absolute inset-0 p-4 space-y-2 bg-background z-10">
+          <Skeleton className="h-4 w-3/4 bg-primary/5" />
+          <Skeleton className="h-4 w-1/2 bg-primary/5" />
+          <Skeleton className="h-4 w-full bg-primary/5" />
+          <Skeleton className="h-4 w-2/3 bg-primary/5" />
         </div>
       )}
       <Editor
@@ -138,6 +139,7 @@ export function CodeEditor({ code, language, isDarkMode, readOnly = false, onCha
         theme={isDarkMode ? 'web3-dark' : 'web3-light'}
         onChange={(value) => onChange?.(value || '')}
         onMount={handleEditorDidMount}
+        beforeMount={handleEditorWillMount}
         loading=""
         options={{
           readOnly,

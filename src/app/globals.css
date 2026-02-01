@@ -3,31 +3,29 @@
 @layer base {
   :root {
     /* Default - Dark Mode for Web3 aesthetic */
-    --background: 224 71% 4%;
+    --background: 230 50% 3%;
     --foreground: 210 40% 98%;
-    --card: 222 47% 11%;
+    --card: 230 50% 6%;
     --card-foreground: 210 40% 98%;
-    --popover: 222 47% 11%;
+    --popover: 230 50% 5%;
     --popover-foreground: 210 40% 98%;
-    --primary: 263 90% 65%;
+    --primary: 270 95% 65%;
+    /* Vibrant Purple */
     --primary-foreground: 210 40% 98%;
-    --secondary: 217 32% 17%;
+    --secondary: 230 30% 12%;
     --secondary-foreground: 210 40% 98%;
-    --muted: 217 32% 17%;
+    --muted: 230 20% 10%;
     --muted-foreground: 215 20% 65%;
-    --accent: 180 100% 50%;
-    --accent-foreground: 222 47% 11%;
-    --destructive: 0 100% 60%;
+    --accent: 185 100% 50%;
+    /* Cyan accent */
+    --accent-foreground: 230 50% 3%;
+    --destructive: 0 100% 50%;
     --destructive-foreground: 210 40% 98%;
-    --border: 217 32% 17%;
-    --input: 217 32% 17%;
-    --ring: 263 90% 65%;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
-    --radius: 0.75rem;
+    --border: 230 30% 15%;
+    --input: 230 30% 15%;
+    --ring: 270 95% 65%;
+    --radius: 0rem;
+    /* SHARP CORNERS */
   }
 
   .light {
@@ -119,6 +117,55 @@
     --ring: 0 0% 100%;
     --radius: 0rem;
   }
+
+  .cyberpunk {
+    --background: 280 100% 5%;
+    --foreground: 180 100% 50%;
+    --card: 280 100% 7%;
+    --card-foreground: 180 100% 50%;
+    --primary: 320 100% 50%;
+    /* Neon Pink */
+    --secondary: 180 100% 50%;
+    /* Neon Cyan */
+    --accent: 60 100% 50%;
+    /* Neon Yellow */
+    --muted: 280 50% 15%;
+    --muted-foreground: 320 100% 70%;
+    --border: 320 100% 50% / 0.3;
+    --radius: 0rem;
+  }
+
+  .glass {
+    --background: 230 50% 3%;
+    --foreground: 210 40% 98%;
+    --card: 230 50% 6% / 0.5;
+    --primary: 270 95% 65%;
+    --radius: 0rem;
+  }
+
+  .neobrutalism {
+    --background: 45 100% 96%;
+    --foreground: 0 0% 0%;
+    --card: 45 100% 96%;
+    --primary: 190 100% 50%;
+    /* Blue */
+    --secondary: 320 100% 50%;
+    /* Pink */
+    --accent: 60 100% 50%;
+    /* Yellow */
+    --border: 0 0% 0%;
+    --radius: 0rem;
+  }
+
+  .enterprise {
+    --background: 210 20% 98%;
+    --foreground: 220 40% 10%;
+    --card: 0 0% 100%;
+    --primary: 220 100% 40%;
+    /* Professional Blue */
+    --border: 220 20% 85%;
+    --radius: 0rem;
+  }
 }
 
 @layer base {
@@ -135,8 +182,9 @@
   .dark body,
   :root body {
     background-image:
-      radial-gradient(circle at 15% 50%, rgba(76, 29, 149, 0.15), transparent 25%),
-      radial-gradient(circle at 85% 30%, rgba(6, 182, 212, 0.15), transparent 25%);
+      radial-gradient(circle at 15% 50%, rgba(139, 92, 246, 0.12), transparent 40%),
+      radial-gradient(circle at 85% 30%, rgba(6, 182, 212, 0.1), transparent 40%),
+      radial-gradient(circle at 50% 0%, rgba(168, 85, 247, 0.05), transparent 50%);
     background-attachment: fixed;
   }
 
@@ -153,6 +201,11 @@
   .minimalist-dark body {
     background-image: none !important;
     background-color: hsl(var(--background)) !important;
+  }
+
+  /* Global sharp corners enforcement */
+  * {
+    border-radius: var(--radius) !important;
   }
 }
 
@@ -247,6 +300,177 @@
 
   .light * {
     scrollbar-color: rgba(0, 0, 0, 0.15) transparent;
+  }
+
+  /* Blueshift Design System Tokens */
+  .swoosh-active::after {
+    opacity: 1 !important;
+  }
+
+  .animate-card-swoosh {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .animate-card-swoosh::after {
+    content: '';
+    position: absolute;
+    pointer-events: none;
+    opacity: 0;
+    origin-center: center;
+    border-radius: inherit;
+    left: -50%;
+    top: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(var(--swoosh-angle, 135deg),
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0) 40%,
+        rgba(255, 255, 255, 0.1) 45%,
+        rgba(255, 255, 255, 0.2) 50%,
+        rgba(255, 255, 255, 0.1) 55%,
+        rgba(255, 255, 255, 0) 60%,
+        rgba(255, 255, 255, 0) 100%);
+    transition: opacity 0.3s ease;
+  }
+
+  .swoosh-top::after {
+    animation: swoosh-top 1.5s ease-out forwards;
+    opacity: 1;
+  }
+
+  .swoosh-right::after {
+    animation: swoosh-right 1.5s ease-out forwards;
+    opacity: 1;
+  }
+
+  .swoosh-bottom::after {
+    animation: swoosh-bottom 1.5s ease-out forwards;
+    opacity: 1;
+  }
+
+  .swoosh-left::after {
+    animation: swoosh-left 1.5s ease-out forwards;
+    opacity: 1;
+  }
+
+  .swoosh-top-left::after {
+    animation: swoosh-top-left 1.5s ease-out forwards;
+    opacity: 1;
+  }
+
+  .swoosh-top-right::after {
+    animation: swoosh-top-right 1.5s ease-out forwards;
+    opacity: 1;
+  }
+
+  .swoosh-bottom-left::after {
+    animation: swoosh-bottom-left 1.5s ease-out forwards;
+    opacity: 1;
+  }
+
+  .swoosh-bottom-right::after {
+    animation: swoosh-bottom-right 1.5s ease-out forwards;
+    opacity: 1;
+  }
+
+  @keyframes swoosh-top {
+    0% {
+      transform: translateY(-100%);
+    }
+
+    100% {
+      transform: translateY(100%);
+    }
+  }
+
+  @keyframes swoosh-right {
+    0% {
+      transform: translateX(100%);
+    }
+
+    100% {
+      transform: translateX(-100%);
+    }
+  }
+
+  @keyframes swoosh-bottom {
+    0% {
+      transform: translateY(100%);
+    }
+
+    100% {
+      transform: translateY(-100%);
+    }
+  }
+
+  @keyframes swoosh-left {
+    0% {
+      transform: translateX(-100%);
+    }
+
+    100% {
+      transform: translateX(100%);
+    }
+  }
+
+  @keyframes swoosh-top-left {
+    0% {
+      transform: translate(-100%, -100%);
+    }
+
+    100% {
+      transform: translate(100%, 100%);
+    }
+  }
+
+  @keyframes swoosh-top-right {
+    0% {
+      transform: translate(100%, -100%);
+    }
+
+    100% {
+      transform: translate(-100%, 100%);
+    }
+  }
+
+  @keyframes swoosh-bottom-left {
+    0% {
+      transform: translate(-100%, 100%);
+    }
+
+    100% {
+      transform: translate(100%, -100%);
+    }
+  }
+
+  @keyframes swoosh-bottom-right {
+    0% {
+      transform: translate(100%, 100%);
+    }
+
+    100% {
+      transform: translate(-100%, -100%);
+    }
+  }
+
+  .gradient-border-pixel {
+    position: relative;
+    border-radius: inherit;
+  }
+
+  .gradient-border-pixel::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    padding: 1px;
+    border-radius: inherit;
+    background: linear-gradient(to bottom right, rgba(0, 255, 255, 0.5), rgba(76, 29, 149, 0.2));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
   }
 }
 

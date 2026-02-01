@@ -29,43 +29,34 @@ const CATEGORY_GRADIENTS: Record<string, string> = {
     defi: 'from-indigo-500/20 to-violet-500/20',
 }
 
+import { Header } from '@/components/Header'
+import { Footer } from '@/components/Footer'
+
 export default function SolidityPage() {
     const categories = getAllCategories()
 
     return (
         <div className="min-h-screen bg-background relative overflow-hidden flex flex-col">
-            {/* Background Effects */}
-            <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-purple-600/10 rounded-full blur-[120px] pointer-events-none" />
-            <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-cyan-600/10 rounded-full blur-[100px] pointer-events-none" />
+            <Header />
 
-            {/* Header */}
-            <header className="h-20 border-b flex items-center justify-between px-8 relative z-50 glass sticky top-0 bg-background/80 backdrop-blur-md">
-                <div className="flex items-center gap-6">
-                    <Link href="/">
-                        <Button variant="ghost" size="sm" className="gap-2 text-muted-foreground hover:text-foreground">
-                            <ArrowLeft className="w-4 h-4" />
-                            Back to Home
-                        </Button>
-                    </Link>
-                    <Logo />
-                </div>
-                <ThemeSelector />
-            </header>
+            {/* Background Effects */}
+            <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-purple-600/10 rounded-none blur-[160px] pointer-events-none opacity-50" />
+            <div className="absolute bottom-[-10%] left-[-10%] w-[600px] h-[600px] bg-cyan-600/5 rounded-none blur-[140px] pointer-events-none opacity-30" />
 
             {/* Main Content */}
-            <main className="flex-1 container mx-auto px-6 py-12 relative z-10">
+            <main className="flex-1 container mx-auto px-6 pt-32 pb-12 relative z-10">
                 {/* Hero Section */}
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     className="text-center mb-16"
                 >
-                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-medium mb-6">
+                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-none bg-primary/10 border border-primary/20 text-primary text-sm font-medium mb-6">
                         <BookOpen className="w-4 h-4" />
                         <span>Learn Solidity</span>
                     </div>
-                    <h1 className="text-5xl md:text-6xl font-black mb-6 leading-tight">
-                        Solidity by Example
+                    <h1 className="text-5xl md:text-6xl font-black mb-6 leading-tight uppercase">
+                        Solidity <span className="text-primary drop-shadow-[0_0_15px_rgba(168,85,247,0.4)]">by Example</span>
                     </h1>
                     <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
                         Master Solidity through practical examples. From beginner basics to advanced DeFi patterns,
@@ -88,16 +79,16 @@ export default function SolidityPage() {
                             transition={{ delay: index * 0.1 }}
                         >
                             <Link href={`/solidity/${category.slug}`}>
-                                <div className={`glass-card p-6 rounded-2xl h-full cursor-pointer group transition-all hover:scale-[1.02] bg-gradient-to-br ${CATEGORY_GRADIENTS[category.slug] || 'from-muted to-transparent'}`}>
+                                <div className={`glass-card p-6 rounded-none h-full cursor-pointer group transition-all hover:scale-[1.01] bg-gradient-to-br ${CATEGORY_GRADIENTS[category.slug] || 'from-muted to-transparent shadow-sm'} border border-border hover:border-primary/50`}>
                                     <div className="flex items-start justify-between mb-4">
-                                        <div className="p-3 rounded-xl bg-muted text-primary group-hover:bg-primary/20 transition-colors">
+                                        <div className="p-3 rounded-none bg-primary/10 text-primary group-hover:bg-primary/20 transition-colors border border-primary/20">
                                             {CATEGORY_ICONS[category.slug] || <BookOpen className="w-8 h-8" />}
                                         </div>
-                                        <span className="text-xs font-bold px-3 py-1 rounded-full bg-muted text-muted-foreground">
+                                        <span className="text-xs font-bold px-3 py-1 rounded-none bg-primary/10 text-primary border border-primary/20">
                                             {category.count} lessons
                                         </span>
                                     </div>
-                                    <h3 className="text-xl font-bold mb-2 group-hover:text-primary transition-colors">
+                                    <h3 className="text-xl font-bold mb-2 group-hover:text-primary transition-colors tracking-tight">
                                         {category.name}
                                     </h3>
                                     <p className="text-sm text-muted-foreground line-clamp-2">
@@ -130,37 +121,7 @@ export default function SolidityPage() {
                 </div>
             </main>
 
-            {/* Footer */}
-            <footer className="border-t bg-background/50 backdrop-blur-sm">
-                <div className="container mx-auto px-6 py-8">
-                    <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-                        <div className="flex items-center gap-6">
-                            <a
-                                href="https://discord.gg/qMd7jwV7UG"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors"
-                            >
-                                <MessageCircle className="w-4 h-4" />
-                                Join Discord
-                            </a>
-                            <a
-                                href="https://github.com/mirmohmmadluqman/security-pg/issues"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors"
-                            >
-                                <Bug className="w-4 h-4" />
-                                Report Issues
-                            </a>
-                        </div>
-                        <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                            <span>© 2026 Mir Mohmmad Luqman. All rights reserved.</span>
-                            <span className="px-2 py-1 rounded bg-muted text-xs">Open-source</span>
-                        </div>
-                    </div>
-                </div>
-            </footer>
+            <Footer />
         </div>
     )
 }

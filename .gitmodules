@@ -1,0 +1,3 @@
+[submodule "security-pg-core-contracts/lib/forge-std"]
+	path = security-pg-core-contracts/lib/forge-std
+	url = https://github.com/foundry-rs/forge-std

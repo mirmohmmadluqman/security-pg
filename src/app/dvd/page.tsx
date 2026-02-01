@@ -13,6 +13,8 @@ import { ChallengeCard } from '@/components/dvd/ChallengeCard'
 import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
 
+import { Header } from '@/components/Header'
+
 export default function DVDDashboard() {
     const challenges = getAllDVDChallenges()
     const [searchQuery, setSearchQuery] = useState('')
@@ -24,28 +26,11 @@ export default function DVDDashboard() {
 
     return (
         <div className="min-h-screen bg-background relative overflow-hidden flex flex-col">
-            {/* Background Gradients */}
-            <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-primary/10 rounded-full blur-[160px] pointer-events-none opacity-50" />
-            <div className="absolute bottom-[-10%] left-[-10%] w-[600px] h-[600px] bg-purple-500/10 rounded-full blur-[140px] pointer-events-none opacity-30" />
+            <Header />
 
-            <header className="h-20 border-b border-white/5 flex items-center justify-between px-8 relative z-50 glass sticky top-0 bg-background/80 backdrop-blur-md">
-                <div className="flex items-center gap-6">
-                    <Link href="/">
-                        <Button variant="ghost" size="sm" className="gap-2 text-muted-foreground hover:text-foreground">
-                            <ArrowLeft className="w-4 h-4" />
-                            To Home
-                        </Button>
-                    </Link>
-                    <Logo />
-                </div>
-                <div className="flex items-center gap-4">
-                    <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full bg-red-500/10 border border-red-500/20 text-xs text-red-500 font-bold">
-                        <Star className="w-3 h-3" />
-                        <span>Advanced Mode</span>
-                    </div>
-                    <ThemeSelector />
-                </div>
-            </header>
+            {/* Background Gradients */}
+            <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-[#00ffff]/5 rounded-full blur-[160px] pointer-events-none opacity-50" />
+            <div className="absolute bottom-[-10%] left-[-10%] w-[600px] h-[600px] bg-purple-500/5 rounded-full blur-[140px] pointer-events-none opacity-30" />
 
             <main className="flex-1 container mx-auto px-6 py-12 relative z-10 flex flex-col gap-16">
                 {/* Hero Section */}

@@ -76,7 +76,7 @@ export function ActionButtons({
 
   return (
     <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-      <div className="flex items-center gap-3 bg-black/20 px-3 py-1.5 rounded-full border border-white/5">
+      <div className="flex items-center gap-3 bg-black/20 px-3 py-1.5 rounded-none border border-white/5">
         <div className="flex items-center gap-2">
           {getStatusIcon()}
           <span className="text-sm font-mono text-muted-foreground min-w-[100px]">
@@ -105,7 +105,7 @@ export function ActionButtons({
           size="sm"
           onClick={onCompile}
           disabled={isRunning}
-          className="gap-2 border-white/10 hover:bg-white/5 hover:text-cyan-400 transition-all hover:border-cyan-400/50"
+          className="gap-2 border-white/10 rounded-none hover:bg-primary/5 hover:text-primary transition-all hover:border-primary/50 uppercase tracking-widest font-mono text-xs"
         >
           <Play className="w-3.5 h-3.5" />
           Compile
@@ -116,7 +116,7 @@ export function ActionButtons({
           size="sm"
           onClick={onDeploy}
           disabled={isRunning}
-          className="gap-2 border-white/10 hover:bg-white/5 hover:text-yellow-400 transition-all hover:border-yellow-400/50"
+          className="gap-2 border-white/10 rounded-none hover:bg-primary/5 hover:text-primary transition-all hover:border-primary/50 uppercase tracking-widest font-mono text-xs"
         >
           <Upload className="w-3.5 h-3.5" />
           Deploy
@@ -127,10 +127,10 @@ export function ActionButtons({
           onClick={onExploit}
           disabled={isRunning}
           className={cn(
-            "gap-2 font-bold shadow-lg transition-all min-w-[120px]",
+            "gap-2 font-bold shadow-lg transition-all min-w-[120px] rounded-none uppercase tracking-widest",
             activeTab === 'fixed'
-              ? "bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white shadow-green-500/20"
-              : "bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-500 hover:to-orange-500 text-white shadow-red-500/20"
+              ? "bg-green-600 hover:bg-green-500 text-white shadow-green-500/20"
+              : "bg-primary hover:bg-primary/90 text-primary-foreground shadow-primary/20"
           )}
         >
           <Zap className="w-3.5 h-3.5 fill-current" />

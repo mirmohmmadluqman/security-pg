@@ -9,37 +9,42 @@ interface FooterProps {
 
 export function Footer({ showGitHubLogo = true }: FooterProps) {
     const handleReportIssue = () => {
-        const confirmed = window.confirm('Do you want to report an issue on GitHub?')
-        if (confirmed) {
-            window.open('https://github.com/mirmohmadluqman/security-pg/issues', '_blank')
-        }
+        window.open('https://github.com/mirmohmmadluqman/security-pg/issues', '_blank')
     }
 
     return (
         <footer className="border-t border-white/10 bg-black/20 backdrop-blur-sm mt-auto">
             <div className="max-w-7xl mx-auto px-6 py-8">
-                <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-                    <div className="flex items-center gap-6">
-                        {showGitHubLogo && (
-                            <Link
-                                href="https://github.com/mirmohmmadluqman/"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-muted-foreground hover:text-white transition-colors"
-                            >
-                                <Github className="w-6 h-6" />
-                            </Link>
-                        )}
+                <div className="flex flex-col md:flex-row justify-between items-center gap-6">
+                    <div className="flex items-center gap-8">
+                        <Link
+                            href="https://discord.gg/qMd7jwV7UG"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-sm text-muted-foreground hover:text-primary transition-colors flex items-center gap-2"
+                        >
+                            Join Discord
+                        </Link>
                         <button
                             onClick={handleReportIssue}
-                            className="text-sm text-muted-foreground hover:text-white transition-colors underline-offset-4 hover:underline"
+                            className="text-sm text-muted-foreground hover:text-primary transition-colors underline-offset-4"
                         >
                             Report Issues
                         </button>
                     </div>
-                    <p className="text-sm text-muted-foreground">
-                        © 2026 Mir Mohmmad Luqman. All rights reserved.
-                    </p>
+
+                    <div className="flex flex-col md:flex-row items-center gap-4 text-sm text-muted-foreground">
+                        <span>© 2026 Mir Mohmmad Luqman. All rights reserved.</span>
+                        <Link
+                            href="https://github.com/mirmohmmadluqman/security-pg"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-2 px-3 py-1 rounded-none bg-primary/10 border border-primary/20 text-primary text-xs font-mono group hover:bg-primary/20 transition-all shadow-[0_0_10px_rgba(168,85,247,0.1)]"
+                        >
+                            <Github className="w-3.5 h-3.5 group-hover:scale-110 transition-transform" />
+                            <span>OPEN-SOURCE</span>
+                        </Link>
+                    </div>
                 </div>
             </div>
         </footer>

@@ -8,6 +8,8 @@ import { Logo } from '@/components/Logo'
 import { ThemeSelector } from '@/components/ThemeSelector'
 import { Button } from '@/components/ui/button'
 import { getAllCategories, getLessonsByCategory } from '@/lib/solidity'
+import { Header } from '@/components/Header'
+import { Footer } from '@/components/Footer'
 import { ArrowLeft, BookOpen, Code2, Shield, Cpu, TestTube, Hammer, Coins, ChevronRight, MessageCircle, Bug, Search } from 'lucide-react'
 
 const CATEGORY_ICONS: Record<string, React.ReactNode> = {
@@ -152,37 +154,7 @@ export default function CategoryPage() {
                 </main>
             </div>
 
-            {/* Footer */}
-            <footer className="border-t bg-background/50 backdrop-blur-sm">
-                <div className="container mx-auto px-6 py-6">
-                    <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-                        <div className="flex items-center gap-6">
-                            <a
-                                href="https://discord.gg/qMd7jwV7UG"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors"
-                            >
-                                <MessageCircle className="w-4 h-4" />
-                                Join Discord
-                            </a>
-                            <a
-                                href="https://github.com/mirmohmmadluqman/security-pg/issues"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors"
-                            >
-                                <Bug className="w-4 h-4" />
-                                Report Issues
-                            </a>
-                        </div>
-                        <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                            <span>© 2026 Mir Mohmmad Luqman. All rights reserved.</span>
-                            <span className="px-2 py-1 rounded bg-muted text-xs">Open-source</span>
-                        </div>
-                    </div>
-                </div>
-            </footer>
+            <Footer />
         </div>
     )
 }
