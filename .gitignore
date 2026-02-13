@@ -61,3 +61,32 @@ server.log
 # Folders // because there will be seperate repository for that
 security-pg-core-contracts/
 Wallet-Integration/
+
+# OS JUNk
+Thumbs.db
+*.swp
+*.swo
+*.bak
+*.tmp
+*.old
+.idea/
+.history/
+.cache/
+
+#NODE
+.npm/
+.eslintcache
+.turbo
+.nx/
+.vite/
+.parcel-cache/
+
+#ENV BCKUP
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+#EXTRAS
+.next/cache/
+.vercel/output
