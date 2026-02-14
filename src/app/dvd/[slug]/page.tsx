@@ -54,7 +54,7 @@ export default function DVDChallengePage() {
                 e.preventDefault()
                 setIsSidebarOpen(prev => !prev)
             }
-            if ((e.metaKey || e.ctrlKey) && e.key === 'j') {
+            if ((e.metaKey || e.ctrlKey) && e.key === '`') {
                 e.preventDefault()
                 setIsTerminalOpen(prev => !prev)
             }
@@ -183,7 +183,7 @@ export default function DVDChallengePage() {
                             <div className="flex items-center gap-2 shrink-0">
                                 <Button
                                     size="sm"
-                                    className="h-9 px-4 rounded-none bg-red-600 hover:bg-red-700 gap-2 font-bold text-xs shadow-lg shadow-red-900/20"
+                                    className="cursor-pointer animate-shine h-9 px-4 rounded-none bg-red-600 hover:bg-red-700 gap-2 font-bold text-xs shadow-lg shadow-red-900/20 hover:shadow-red-500/40 transition-all font-mono tracking-widest"
                                     onClick={handleRunExploit}
                                     disabled={isRunning}
                                 >
@@ -200,7 +200,7 @@ export default function DVDChallengePage() {
                                     size="icon"
                                     className="h-9 w-9 text-muted-foreground hover:text-foreground transition-colors rounded-none"
                                     onClick={() => setIsTerminalOpen(!isTerminalOpen)}
-                                    title={isTerminalOpen ? "Close Terminal (Ctrl+J)" : "Open Terminal (Ctrl+J)"}
+                                    title={isTerminalOpen ? "Close Terminal (Ctrl+`)" : "Open Terminal (Ctrl+`)"}
                                 >
                                     {isTerminalOpen ? <PanelBottomClose size={18} /> : <PanelBottomOpen size={18} />}
                                 </Button>

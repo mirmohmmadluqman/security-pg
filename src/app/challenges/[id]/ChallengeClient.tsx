@@ -78,6 +78,37 @@ export default function ChallengeClient({ challengeId }: { challengeId: string }
         setMounted(true)
     }, [])
 
+    useEffect(() => {
+        if (selectedModule) {
+            setCode(selectedModule.vulnerableCode)
+        }
+    }, [selectedModule])
+
+    // Layout Toggles
+    const toggleLeftPanel = () => {
+        const panel = leftPanelRef.current
+        if (panel) {
+            if (leftBlocked) panel.expand()
+            else panel.collapse()
+        }
+    }
+
+    const toggleRightPanel = () => {
+        const panel = rightPanelRef.current
+        if (panel) {
+            if (rightBlocked) panel.expand()
+            else panel.collapse()
+        }
+    }
+
+    const toggleBottomPanel = () => {
+        const panel = bottomPanelRef.current
+        if (panel) {
+            if (bottomBlocked) panel.expand()
+            else panel.collapse()
+        }
+    }
+
     // Keyboard Shortcuts
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
@@ -106,12 +137,6 @@ export default function ChallengeClient({ challengeId }: { challengeId: string }
         window.addEventListener('keydown', handleKeyDown)
         return () => window.removeEventListener('keydown', handleKeyDown)
     }, [leftBlocked, rightBlocked, bottomBlocked, showTopBar])
-
-    useEffect(() => {
-        if (selectedModule) {
-            setCode(selectedModule.vulnerableCode)
-        }
-    }, [selectedModule])
 
     // Reset compilation whenever code changes
     useEffect(() => {
@@ -254,30 +279,6 @@ export default function ChallengeClient({ challengeId }: { challengeId: string }
         setLogs([...logs, '💾 Local progress saved!'])
     }
 
-    // Layout Toggles
-    const toggleLeftPanel = () => {
-        const panel = leftPanelRef.current
-        if (panel) {
-            if (leftBlocked) panel.expand()
-            else panel.collapse()
-        }
-    }
-
-    const toggleRightPanel = () => {
-        const panel = rightPanelRef.current
-        if (panel) {
-            if (rightBlocked) panel.expand()
-            else panel.collapse()
-        }
-    }
-
-    const toggleBottomPanel = () => {
-        const panel = bottomPanelRef.current
-        if (panel) {
-            if (bottomBlocked) panel.expand()
-            else panel.collapse()
-        }
-    }
 
     return (
         <div className="h-screen bg-background flex flex-col relative overflow-hidden text-foreground">

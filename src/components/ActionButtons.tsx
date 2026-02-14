@@ -105,7 +105,7 @@ export function ActionButtons({
           size="sm"
           onClick={onCompile}
           disabled={isRunning}
-          className="gap-2 border-white/10 rounded-none hover:bg-primary/5 hover:text-primary transition-all hover:border-primary/50 uppercase tracking-widest font-mono text-xs"
+          className="cursor-pointer animate-shine gap-2 border-white/10 rounded-none hover:bg-primary/20 hover:text-primary transition-all hover:border-primary/50 uppercase tracking-widest font-mono text-xs"
         >
           <Play className="w-3.5 h-3.5" />
           Compile
@@ -116,7 +116,7 @@ export function ActionButtons({
           size="sm"
           onClick={onDeploy}
           disabled={isRunning}
-          className="gap-2 border-white/10 rounded-none hover:bg-primary/5 hover:text-primary transition-all hover:border-primary/50 uppercase tracking-widest font-mono text-xs"
+          className="cursor-pointer animate-shine gap-2 border-white/10 rounded-none hover:bg-primary/20 hover:text-primary transition-all hover:border-primary/50 uppercase tracking-widest font-mono text-xs"
         >
           <Upload className="w-3.5 h-3.5" />
           Deploy
@@ -127,10 +127,10 @@ export function ActionButtons({
           onClick={onExploit}
           disabled={isRunning}
           className={cn(
-            "gap-2 font-bold shadow-lg transition-all min-w-[120px] rounded-none uppercase tracking-widest",
+            "cursor-pointer animate-shine gap-2 font-bold shadow-lg transition-all min-w-[120px] rounded-none uppercase tracking-widest",
             activeTab === 'fixed'
-              ? "bg-green-600 hover:bg-green-500 text-white shadow-green-500/20"
-              : "bg-primary hover:bg-primary/90 text-primary-foreground shadow-primary/20"
+              ? "bg-green-600 hover:bg-green-500 text-white shadow-green-500/20 hover:shadow-green-500/40"
+              : "bg-primary hover:bg-primary/90 text-primary-foreground shadow-primary/20 hover:shadow-primary/40"
           )}
         >
           <Zap className="w-3.5 h-3.5 fill-current" />
