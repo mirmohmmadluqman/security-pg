@@ -7,7 +7,7 @@ export const metadata: Metadata = {
     openGraph: {
         title: 'Security Playground - Smart Contract Security Training',
         description: 'Learn Ethereum security by exploiting and fixing real smart contract vulnerabilities',
-        url: 'https://mirmohmmadluqman.github.io/security-pg',
+        url: 'https://securitypg.vercel.app',
         siteName: 'Security Playground',
         type: 'website',
         images: [
