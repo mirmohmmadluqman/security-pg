@@ -6,6 +6,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { LegalGate } from "@/components/LegalGate";
 import { ImageZoomProvider } from "@/components/ImageZoom";
 import { MotionProvider } from "@/components/MotionProvider";
+import { StructuredData } from "@/components/StructuredData";
 
 import { WalletProvider } from "@/context/WalletContext";
 
@@ -39,7 +40,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Security Playground - Smart Contract Security Training",
     description: "Learn Ethereum security by exploiting and fixing real smart contract vulnerabilities",
-    url: "https://mirmohmmadluqman.github.io/security-pg",
+    url: "https://securitypg.vercel.app",
     siteName: "Security Playground",
     type: "website",
   },
@@ -67,6 +68,7 @@ export default function RootLayout({
           disableTransitionOnChange
           themes={["dark", "light", "cyberpunk", "minimalist-light", "minimalist-dark", "glass", "neobrutalism", "enterprise"]}
         >
+          <StructuredData />
           <ImageZoomProvider>
             <WalletProvider>
               <MotionProvider>
