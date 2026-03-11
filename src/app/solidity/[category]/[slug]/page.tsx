@@ -13,10 +13,11 @@ import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism'
 import { CompactNav } from '@/components/CompactNav'
 import { Footer } from '@/components/Footer'
-import { ArrowLeft, ChevronLeft, ChevronRight, Copy, Check, MessageCircle, Bug, BookOpen, Code2, Shield, Cpu, TestTube, Hammer, Coins, Menu, X } from 'lucide-react'
+import { ArrowLeft, ChevronLeft, ChevronRight, Copy, Check, MessageCircle, Bug, BookOpen, Code2, Shield, Cpu, TestTube, Hammer, Coins, Menu, X, Sidebar } from 'lucide-react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { cn } from '@/lib/utils'
+import { useIsMobile } from '@/hooks/use-mobile'
 
 const CATEGORY_ICONS: Record<string, React.ReactNode> = {
     basic: <BookOpen className="w-4 h-4" />,
@@ -96,10 +97,17 @@ export default function LessonPage() {
     const { theme, resolvedTheme } = useTheme()
     const [mounted, setMounted] = React.useState(false)
     const [sidebarOpen, setSidebarOpen] = React.useState(true)
+    const isMobile = useIsMobile()
 
     useEffect(() => {
         setMounted(true)
     }, [])
+
+    useEffect(() => {
+        if (mounted && isMobile) {
+            setSidebarOpen(false)
+        }
+    }, [mounted, isMobile])
 
     const isDark = mounted && (resolvedTheme === 'dark' || (theme !== 'light' && theme !== 'minimalist-light' && theme !== 'neobrutalism' && theme !== 'enterprise'))
 
@@ -147,16 +155,17 @@ export default function LessonPage() {
                 showTheme={true}
             >
                 <div className="flex items-center gap-2">
-                    <button
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        className={cn("h-8 w-8 text-muted-foreground hover:text-foreground rounded-none", sidebarOpen && "text-primary bg-primary/10")}
                         onClick={() => setSidebarOpen(!sidebarOpen)}
-                        className="p-1 px-2 rounded-none hover:bg-primary/10 text-primary transition-colors border border-transparent hover:border-primary/20 flex items-center gap-2"
-                        aria-label="Toggle sidebar"
+                        title="Toggle Sidebar"
                     >
-                        {sidebarOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
-                        <span className="text-[10px] font-bold uppercase tracking-widest hidden sm:inline">Menu</span>
-                    </button>
+                        <Sidebar className="w-4 h-4" />
+                    </Button>
                     <div className="w-px h-6 bg-border mx-1 hidden md:block" />
-                    <h1 className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest hidden md:block">
+                    <h1 className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest hidden md:block truncate max-w-[200px]">
                         {lesson.title}
                     </h1>
                 </div>
@@ -164,7 +173,10 @@ export default function LessonPage() {
 
             <div className="flex-1 flex">
                 {/* Sidebar - toggleable */}
-                <aside className={`${sidebarOpen ? 'w-64' : 'w-0'} transition-all duration-300 border-r bg-background/50 overflow-hidden h-[calc(100vh-4rem)] sticky top-16`}>
+                <aside className={cn(
+                    "transition-all duration-300 border-r bg-background/50 overflow-hidden sticky top-12 h-[calc(100vh-3rem)] z-40",
+                    sidebarOpen ? "w-64" : "w-0 border-none"
+                )}>
                     <nav className="p-3 w-64">
                         <Link href={`/solidity/${categorySlug}`}>
                             <div className="flex items-center gap-2 px-3 py-2 mb-3 rounded-none text-sm text-muted-foreground hover:text-primary transition-colors border border-transparent hover:border-primary/20 bg-primary/5">
