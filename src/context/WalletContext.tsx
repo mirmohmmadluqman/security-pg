@@ -113,6 +113,11 @@ export function WalletProvider({ children }: { children: ReactNode }) {
 
     const login = async () => {
         if (!address || !chainId) return;
+        if (typeof window === 'undefined' || !window.ethereum) {
+            console.error("No wallet found for signing");
+            return;
+        }
+
         setIsLoading(true);
         try {
             // 1. Get Nonce

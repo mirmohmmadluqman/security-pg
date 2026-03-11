@@ -27,8 +27,8 @@ function getReadProvider(): JsonRpcProvider {
 }
 
 async function getSignerProvider(): Promise<BrowserProvider> {
-    if (!window.ethereum) throw new Error("No wallet detected.");
-    return new BrowserProvider(window.ethereum);
+    if (typeof window === 'undefined' || !window.ethereum) throw new Error("No wallet detected.");
+    return new BrowserProvider(window.ethereum as any);
 }
 
 // ==================== CONTRACT INSTANCES ====================
